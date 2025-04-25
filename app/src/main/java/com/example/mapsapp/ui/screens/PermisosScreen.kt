@@ -2,10 +2,6 @@ package com.example.mapsapp.ui.screens
 
 import androidx.compose.runtime.Composable
 import android.Manifest
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -26,36 +22,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mapsapp.utils.PermissionStatus
-import androidx.compose.runtime.State
-
-
+import com.example.mapsapp.utils.PermisosEstado
+import com.example.mapsapp.viewmodels.PermisosViewModel
 
 @Composable
-fun PermisosScreen() {
+fun PermisosScreen(navigate: Unit) {
     val activity = LocalActivity.current
-    val myViewModel = viewModel<PermissionViewModel>()
-    val permissionStatus = myViewModel.permissionStatus.value
-    var alreadyRequested by remember { mutableStateOf(false) }
+    val miViewModel = viewModel<PermisosViewModel>()
+    val estadoPermiso = miViewModel.permisosEstado.value
+    var yaSolicitado by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        val result = when {
-            granted -> PermissionStatus.Granted
+    ) { concedido ->
+        val resultado = when {
+            concedido -> PermisosEstado.Concedido
             ActivityCompat.shouldShowRequestPermissionRationale(
                 activity!!,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> PermissionStatus.Denied
+            ) -> PermisosEstado.Denegado
 
-            else -> PermissionStatus.PermanentlyDenied
+            else -> PermisosEstado.DenegadoPermanentemente
         }
-        myViewModel.updatePermissionStatus(result)
+        miViewModel.updatePermisosEstado(estadoPermiso.toString(), resultado)
     }
 
     LaunchedEffect(Unit) {
-        if (!alreadyRequested) {
-            alreadyRequested = true
+        if (!yaSolicitado) {
+            yaSolicitado = true
             launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
@@ -65,34 +59,28 @@ fun PermisosScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        when (permissionStatus) {
+        when (estadoPermiso) {
             null -> {
                 CircularProgressIndicator()
-                Text("Requesting permission...")
+                Text("Solicitando permiso..")
             }
-            PermissionStatus.Granted -> Text("Permission granted")
-            PermissionStatus.Denied -> {
-                Text("Permission denied")
+
+            PermisosEstado.Concedido -> Text("Permiso concedido")
+            PermisosEstado.Denegado -> {
+                Text("Permiso denegado")
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = {
                     launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }) {
-                    Text("Apply again")
+                    Text("Solicitar nuevamente")
                 }
             }
 
-            PermissionStatus.PermanentlyDenied -> {
-                Text("Permission permanently denied")
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        data = Uri.fromParts("package", activity!!.packageName, null)
-                    }
-                    activity!!.startActivity(intent)
-                }) {
-                    Text("Go to settings")
-                }
+            PermisosEstado.DenegadoPermanentemente -> {
+                Text("Permiso denegado permanentemente")
             }
         }
     }
 }
+
+

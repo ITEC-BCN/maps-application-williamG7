@@ -2,11 +2,9 @@ package com.example.mapsapp.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
@@ -23,23 +21,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.rememberNavController
-import com.example.mapsapp.ui.navigation.Destination
 import com.example.mapsapp.ui.navigation.MainNavigationWrapper
+import com.example.mapsapp.utils.DrawerItem
 import kotlinx.coroutines.launch
 
-enum class DrawerItem(
-    val icon: ImageVector,
-    val text: String,
-    val route: Destination
-) {
-    HOME(Icons.Default.Home, "Home", Destination.Home),
-    SETTINGS(Icons.Default.Settings, "Settings", Destination.Settings),
-    ABOUT(Icons.Default.Info, "About", Destination.About),
-}
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyDrawerMenu() {
     val navController = rememberNavController()
