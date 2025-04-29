@@ -24,8 +24,8 @@ class MySuperBaseCliente {
         }
     }
 
-    suspend fun getAllMarkers(): List<Marker> {
-        return cliente.from("Marker").select().decodeList<Marker>()
+    suspend fun getAllMarkers(): List<com.example.mapsapp.utils.Marker> {
+        return cliente.from("Marker").select().decodeList<com.example.mapsapp.utils.Marker>()
     }
 
     suspend fun getMarker(id: String): PostgrestResult {

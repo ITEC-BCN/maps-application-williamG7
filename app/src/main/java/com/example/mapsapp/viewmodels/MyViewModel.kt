@@ -6,6 +6,7 @@ import com.example.mapsapp.utils.Marker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -17,6 +18,7 @@ class MyViewModel {
     val markerName = _markerTitle
 
     private val _markerUserId = MutableLiveData<Uuid>()
+
     @OptIn(ExperimentalUuidApi::class)
     val markerUserId = _markerUserId
 
@@ -32,15 +34,26 @@ class MyViewModel {
     private val _markerLatitude = MutableLiveData<Double>()
     val markerLatitude = _markerLatitude
 
+    private val _markersList = MutableLiveData<List<Marker>>()
+    val markersList = _markersList
+
+    fun getAllMarkers(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val dataBaseMarkers = dataBase.getAllMarkers()
+            withContext(Dispatchers.Main) {
+                _markersList.value = dataBaseMarkers
+            }
+        }
+    }
+
     @OptIn(ExperimentalUuidApi::class)
-    fun insertMarker(id:String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double){
+    fun insertNewMarker(id:String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double){
         val newMarker = Marker(id = id, title = title, user_id = user_id, created_at = created_at, category = category, longitude = longitude, latitude = latitude)
         CoroutineScope(Dispatchers.IO).launch {
             dataBase.insertMarker(newMarker)
             getAllMarkers()
         }
     }
-
 
 
 }
