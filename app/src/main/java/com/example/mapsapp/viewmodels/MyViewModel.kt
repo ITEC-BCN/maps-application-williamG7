@@ -37,6 +37,8 @@ class MyViewModel {
     private val _markersList = MutableLiveData<List<Marker>>()
     val markersList = _markersList
 
+    private var _selectedMarker: Marker? = null
+
     fun getAllMarkers(){
         CoroutineScope(Dispatchers.IO).launch {
             val dataBaseMarkers = dataBase.getAllMarkers()
@@ -47,15 +49,70 @@ class MyViewModel {
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun insertNewMarker(id:String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double){
-        val newMarker = Marker(id = id, title = title, user_id = user_id, created_at = created_at, category = category, longitude = longitude, latitude = latitude)
+    fun insertNewMarker( title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double){
+        val newMarker = Marker(title = title, user_id = user_id, created_at = created_at, category = category, longitude = longitude, latitude = latitude)
         CoroutineScope(Dispatchers.IO).launch {
             dataBase.insertMarker(newMarker)
             getAllMarkers()
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
+    fun updateMarker(id: Int, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double){
+        CoroutineScope(Dispatchers.IO).launch {
+            dataBase.updateMarker(id.toString(), title, user_id, created_at, category, longitude, latitude)
+        }
+    }
 
+    fun deleteMarker(id: Int){
+        CoroutineScope(Dispatchers.IO).launch {
+            dataBase.deleteMarker(id.toString())
+            getAllMarkers()
+        }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    fun getMarker(id: Int){
+        if (_selectedMarker == null){
+            CoroutineScope(Dispatchers.IO).launch {
+                val marker = dataBase.getMarker(id.toString())
+                withContext(Dispatchers.Main) {
+                    _selectedMarker = marker
+                    _markerTitle.value = marker.title
+                    _markerUserId.value = marker.user_id
+                    _markerCreatedAt.value = marker.created_at
+                    _markerCategory.value = marker.category.toString()
+                    _markerLongitude.value = marker.longitude
+                    _markerLatitude.value = marker.latitude
+                }
+            }
+        }
+    }
+
+    fun editMarkerTitle(title: String) {
+        _markerTitle.value = title
+    }
+    
+    @OptIn(ExperimentalUuidApi::class)
+    fun editMarkerUserId(userId: Uuid) {
+        _markerUserId.value = userId
+    }
+
+    fun editMarkerCreatedAt(createdAt: String) {
+        _markerCreatedAt.value = createdAt
+    }
+    
+    fun editMarkerCategory(category: String) {
+        _markerCategory.value = category
+    }
+    
+    fun editMarkerLongitude(longitude: Double) {
+        _markerLongitude.value = longitude
+    }
+    
+    fun editMarkerLatitude(latitude: Double) {
+        _markerLatitude.value = latitude
+    }
 }
 
 

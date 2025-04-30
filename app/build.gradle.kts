@@ -65,6 +65,9 @@ dependencies {
     implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.ktor:ktor-client-android:3.1.2")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:1.4.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("app.softwork:kotlinx-uuid-core:0.0.21")
 }
 
 secrets {

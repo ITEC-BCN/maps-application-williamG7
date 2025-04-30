@@ -1,14 +1,14 @@
 package com.example.mapsapp.data
 
+import com.example.mapsapp.utils.Marker
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 
-import com.google.android.gms.maps.model.Marker
 
 import io.github.jan.supabase.postgrest.result.PostgrestResult
-import java.sql.Timestamp
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -24,24 +24,23 @@ class MySuperBaseCliente {
         }
     }
 
-    suspend fun getAllMarkers(): List<com.example.mapsapp.utils.Marker> {
-        return cliente.from("Marker").select().decodeList<com.example.mapsapp.utils.Marker>()
+    suspend fun getAllMarkers(): List<Marker> {
+        return cliente.from("Marker").select().decodeList<Marker>()
     }
 
-    suspend fun getMarker(id: String): PostgrestResult {
-        return cliente.from("Marker").select {
-            filter {
+    suspend fun getMarker(id: String): Marker {
+        return cliente.postgrest["Marker"]
+            .select {
                 eq("id", id)
-            }.decodeSingle<Marker>()
-        }
+            }.decodeSingle()
     }
 
-    suspend fun insertMarker(marker: com.example.mapsapp.utils.Marker): PostgrestResult {
+    suspend fun insertMarker(marker: Marker): PostgrestResult {
         return cliente.from("Marker").insert(marker)
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun updateMarker(id: String, title: String, user_id: Uuid, created_at: Timestamp, category: String, longitude: Double, latitude: Double): PostgrestResult {
+    suspend fun updateMarker(id: String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double): PostgrestResult {
         return cliente.from("Marker").update({
             set("title", title)
             set("user_id", user_id)
