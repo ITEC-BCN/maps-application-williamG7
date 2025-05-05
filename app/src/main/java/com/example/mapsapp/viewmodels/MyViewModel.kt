@@ -58,7 +58,7 @@ class MyViewModel {
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun updateMarker(id: Int, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double){
+    fun updateMarker(id: String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double){
         CoroutineScope(Dispatchers.IO).launch {
             dataBase.updateMarker(id.toString(), title, user_id, created_at, category, longitude, latitude)
         }
