@@ -28,13 +28,13 @@ import kotlin.uuid.Uuid
 class MySuperBaseCliente {
     lateinit var cliente: SupabaseClient
     lateinit var storage: Storage
-    private val supabaseUrl = BuildConfig.SUPABASE_URL
-    private val supabaseKey = BuildConfig.SUPABASE_KEY
+    private val SupabaseUrl = BuildConfig.SUPABASE_URL
+    private val SupabaseKey = BuildConfig.SUPABASE_KEY
 
-    constructor() {
+    constructor(supabaseUrl: String, supabaseKey: String) {
         cliente = createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseKey
+            supabaseUrl = SupabaseUrl,
+            supabaseKey = SupabaseKey
         ) {
             install(Postgrest)
             install(Storage)
@@ -54,15 +54,7 @@ class MySuperBaseCliente {
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun insertMarker(
-        title: String,
-        user_id: Uuid,
-        created_at: String,
-        category: String,
-        longitude: Double,
-        latitude: Double,
-        marker: String
-    ): PostgrestResult {
+    suspend fun insertMarker(title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, marker: String): PostgrestResult {
         return cliente.from("Marker").insert(marker)
     }
 
@@ -96,7 +88,7 @@ class MySuperBaseCliente {
         val imageName = storage.from("images").upload(path = "image_${fechaHoraActual.format(formato)}.png", data = imageFile)
         return buildImageUrl(imageFileName = imageName.path)
     }
-    fun buildImageUrl(imageFileName: String) = "${this.supabaseUrl}/storage/v1/object/public/images/${imageFileName}"
+    fun buildImageUrl(imageFileName: String) = "${this.SupabaseUrl}/storage/v1/object/public/images/${imageFileName}"
 
     suspend fun deleteImage(imageName: String){
         val imgName = imageName.removePrefix("https://aobflzinjcljzqpxpcxs.supabase.co/storage/v1/object/public/images/")
