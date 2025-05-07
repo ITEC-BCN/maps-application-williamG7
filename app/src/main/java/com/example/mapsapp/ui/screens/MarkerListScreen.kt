@@ -1,6 +1,8 @@
 package com.example.mapsapp.ui.screens
 
 import android.R.attr.text
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,11 +43,12 @@ import kotlinx.uuid.fromString
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun MarkerScreen(navigateToDetailMarker: (String) -> Unit){
 
-    val myViewModel = viewModel<MyViewModel>()
+    val myViewModel: MyViewModel = viewModel()
      val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
     myViewModel.getAllMarkers()
     val markerTitle: String by myViewModel.markerName.observeAsState("")

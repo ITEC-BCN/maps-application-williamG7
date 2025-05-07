@@ -17,7 +17,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun DetailMarkerScreen(markerId: String, navigateBack: (String) -> Unit) {
-    val myViewModel = viewModel<MyViewModel>()
+    val myViewModel: MyViewModel = viewModel()
     myViewModel.getMarker(markerId)
     val markerTitle: String by myViewModel.markerName.observeAsState("")
     val markerUserId: String by myViewModel.markerUserId.observeAsState("")

@@ -88,7 +88,7 @@ class MyViewModel {
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun getMarker(id: Int){
+    fun getMarker(id: String){
         if (_selectedMarker == null){
             CoroutineScope(Dispatchers.IO).launch {
                 val marker = dataBase.getMarker(id.toString())

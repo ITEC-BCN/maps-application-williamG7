@@ -123,3 +123,5 @@ fun createImageUri(contexto: Context): Uri? {
     )
 }
 
+
+
