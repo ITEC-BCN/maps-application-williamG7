@@ -93,7 +93,7 @@ fun MarkerScreen(navigateToDetailMarker: (String) -> Unit){
                 val dissmissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = {
                         if (it == SwipeToDismissBoxValue.EndToStart) {
-                            myViewModel.deleteMarker(marker.id.toString())
+                            myViewModel.deleteMarker(marker.id.toString(), marker.image)
                             true
                         } else {
                             false

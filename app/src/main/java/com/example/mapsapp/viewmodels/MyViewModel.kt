@@ -79,7 +79,7 @@ class MyViewModel {
         }
     }
 
-    fun deleteMarker(id: Int, image: String){
+    fun deleteMarker(id: String, image: String){
         CoroutineScope(Dispatchers.IO).launch {
             dataBase.deleteMarker(id.toString())
             dataBase.deleteImage(image)

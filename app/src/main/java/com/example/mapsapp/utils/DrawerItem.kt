@@ -14,5 +14,5 @@ enum class DrawerItem(
 ) {
     HOME(Icons.Default.Home, "Home", Destination.Permisos),
     SETTINGS(Icons.Default.Settings, "Settings", Destination.Drawer),
-    ABOUT(Icons.Default.Info, "About", Destination.Map),
+    ABOUT(Icons.Default.Info, "About", Destination.Mapp),
 }

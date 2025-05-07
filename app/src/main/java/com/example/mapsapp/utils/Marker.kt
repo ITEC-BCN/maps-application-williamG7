@@ -12,5 +12,7 @@ class Marker @OptIn(ExperimentalUuidApi::class) constructor(
     val created_at: String,
     val category: String,
     val longitude: Double,
-    val latitude: Double
+    val latitude: Double,
+    val image: String
+
 )

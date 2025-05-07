@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDrawerMenu() {
+fun DrawerScreen(navigate: Unit) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()

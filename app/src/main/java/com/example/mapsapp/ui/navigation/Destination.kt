@@ -11,7 +11,7 @@ open class Destination {
     object  Drawer : Destination()
 
     @Serializable
-    object  Map : Destination()
+    object  Mapp : Destination()
 
     @Serializable
     object List: Destination()
