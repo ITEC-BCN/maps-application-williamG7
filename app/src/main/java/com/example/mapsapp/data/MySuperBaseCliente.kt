@@ -1,10 +1,8 @@
 package com.example.mapsapp.data
 
-import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.mapsapp.BuildConfig
-import com.example.mapsapp.MyApp.Companion.dataBase
 import com.example.mapsapp.utils.Marker
 
 import io.github.jan.supabase.SupabaseClient
@@ -16,11 +14,8 @@ import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
-import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
+
 import java.time.format.DateTimeFormatter
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -46,20 +41,22 @@ class MySuperBaseCliente {
         return cliente.from("Marker").select().decodeList<Marker>()
     }
 
-    suspend fun getMarker(id: String): Marker {
+    suspend fun getMarker(id: Int): Marker {
         return cliente.postgrest["Marker"]
-            .select {
-                eq("id", id)
-            }.decodeSingle()
+            .select()
+            .eq"id", id)
+            .single()
+            .decode<Marker>()
     }
 
+
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun insertMarker(title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, marker: String): PostgrestResult {
+    suspend fun insertMarker(title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double,imageName: String, marker: Marker): PostgrestResult {
         return cliente.from("Marker").insert(marker)
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun updateMarker(id: String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
+    suspend fun updateMarker(id: Int, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
     ): PostgrestResult {
         val imageName = storage.from("images").update(path = imageName, data = imageFile)
         return cliente.from("Marker").update({
@@ -88,6 +85,7 @@ class MySuperBaseCliente {
         val imageName = storage.from("images").upload(path = "image_${fechaHoraActual.format(formato)}.png", data = imageFile)
         return buildImageUrl(imageFileName = imageName.path)
     }
+
     fun buildImageUrl(imageFileName: String) = "${this.SupabaseUrl}/storage/v1/object/public/images/${imageFileName}"
 
     suspend fun deleteImage(imageName: String){
