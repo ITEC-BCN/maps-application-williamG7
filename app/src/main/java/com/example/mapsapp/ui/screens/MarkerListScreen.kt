@@ -72,7 +72,7 @@ fun MarkerListScreen(navigateToDetalleMarker: Unit){
         ) {
             Text("Create new marker", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) })
-            TextField(value = userIdText, onValueChange = { myViewModel.editMarkerUserId(UUID.fromString(it)) })
+            TextField(value = userIdText, onValueChange = { myViewModel.editMarkerUserId(UUID(it)) })
             TextField(value = markerCreatedAt, onValueChange = { myViewModel.editMarkerCreatedAt(it) })
             TextField(value = markerCategory, onValueChange = { myViewModel.editMarkerCategory(it) })
             TextField(value = markerLongitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) })
