@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,11 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,18 +30,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import com.example.mapsapp.R
 import java.io.File
 
 @Composable
 fun CreateMarkerScreen(navigateBack: (String) -> Unit, onMarkerDetalle: () -> Boolean, onNavigateToList: () -> Unit) {
+
     val contexto = LocalContext.current
     val imagenUri = remember { mutableStateOf<Uri?>(null) }
+    val imagen: Painter = painterResource(id = R.drawable.camera_icon)
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success && imagenUri.value != null) {
@@ -55,13 +70,20 @@ fun CreateMarkerScreen(navigateBack: (String) -> Unit, onMarkerDetalle: () -> Bo
             }
         }
 
-    var showDialog by remember { mutableStateOf(false) }
+    val takePictureLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success && imagenUri.value != null) {
+                val stream = contexto.contentResolver.openInputStream(imagenUri.value!!)
+                bitmap.value = BitmapFactory.decodeStream(stream)
+            }
+        }
+
 
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Selecciona una opcion") },
-            text = { Text("¿Quieres tomar una foto o elegir una desde la galería?") },
+            title = { Text("Abrir Camara") },
+            text = { Text("¿Quieres tomar una foto?") },
             confirmButton = {
                 TextButton(onClick = {
                     showDialog = false
@@ -71,14 +93,6 @@ fun CreateMarkerScreen(navigateBack: (String) -> Unit, onMarkerDetalle: () -> Bo
                 }) {
                     Text("Tomar Foto")
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showDialog = false
-                    pickImageLauncher.launch("image/*")
-                }) {
-                    Text("Elegir de Galería")
-                }
             }
         )
     }
@@ -86,25 +100,86 @@ fun CreateMarkerScreen(navigateBack: (String) -> Unit, onMarkerDetalle: () -> Bo
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(top = 85.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { showDialog = true }) {
-            Text("Abrir Cámara o Galería")
+        Text("Title",
+            fontSize = 34.sp
+        )
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        TextField(
+            value = title,
+            onValueChange = { title = it },
+            label = { Text("") }
+        )
+
+        Spacer(modifier = Modifier.height(34.dp))
+        Text("Descripcion",
+            fontSize = 30.sp
+        )
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        TextField(
+            value = description,
+            onValueChange = { description = it },
+            label = { Text("") }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Image(
+            painter = imagen,
+            contentDescription = "Camara Icon",
+            modifier = Modifier
+            .size(48.dp)
+            .clickable{
+                val uri = createImageUri(contexto)
+                imagenUri.value = uri
+                launcher.launch(uri!!)
+            }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+        bitmap.value?.let {
+            Image(bitmap = it.asImageBitmap(), contentDescription = null,
+                modifier = Modifier.size(150.dp).clip(RoundedCornerShape(12.dp)),
+                )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        bitmap.value?.let {
-            Image(
-                bitmap = it.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(300.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
+        TextButton( onClick = {
+            pickImageLauncher.launch("image/*")
+        },
+            colors = ButtonDefaults.buttonColors(
+                contentColor = Color.White,
+                containerColor = Color.Blue
+            ),
+            modifier = Modifier
+                .width(100.dp)
+                .height(40.dp)
+        ){
+            Text(
+                "ADD",
+                color = Color.White
             )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = navigateBack as () -> Unit,
+            colors = ButtonDefaults.buttonColors(
+                contentColor = Color.White,
+                containerColor = Color.Blue
+            ),
+            modifier = Modifier
+                .width(100.dp)
+        ) {
+            Text("Go Back")
         }
     }
 }
@@ -121,8 +196,5 @@ fun createImageUri(contexto: Context): Uri? {
         file
     )
 }
-
-
-
 
 
