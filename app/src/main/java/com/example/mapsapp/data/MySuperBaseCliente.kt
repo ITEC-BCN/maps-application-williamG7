@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.mapsapp.BuildConfig
 import com.example.mapsapp.utils.Marker
+import com.google.android.gms.auth.api.signin.internal.Storage
 
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
@@ -12,8 +13,6 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 
 import io.github.jan.supabase.postgrest.result.PostgrestResult
-import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.storage
 import java.time.LocalDateTime
 
 import java.time.format.DateTimeFormatter
@@ -41,12 +40,12 @@ class MySuperBaseCliente {
         return cliente.from("Marker").select().decodeList<Marker>()
     }
 
-    suspend fun getMarker(id: Int): Marker {
+    suspend fun getMarker(id: String): Marker {
         return cliente.postgrest["Marker"]
             .select()
-            .eq"id", id)
+            .eq("id", id)
             .single()
-            .decode<Marker>()
+            .decode()
     }
 
 
@@ -56,7 +55,8 @@ class MySuperBaseCliente {
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun updateMarker(id: Int, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
+    suspend fun updateMarker(
+        id: String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
     ): PostgrestResult {
         val imageName = storage.from("images").update(path = imageName, data = imageFile)
         return cliente.from("Marker").update({

@@ -125,5 +125,12 @@ fun createImageUri(contexto: Context): Uri? {
 }
 
 
+@Preview
+@Composable
+fun CamaraScreenPreview() {
+    CamaraScreen()
+}
+
+
 
 

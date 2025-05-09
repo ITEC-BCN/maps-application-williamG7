@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.uuid.UUID
 import java.io.ByteArrayOutputStream
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -54,7 +55,8 @@ class MyViewModel {
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalUuidApi::class)
-    fun insertNewMarker(title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap? = null
+    fun insertNewMarker(
+        title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap? = null
     ) {
         val stream = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
@@ -108,24 +110,24 @@ class MyViewModel {
     fun editMarkerTitle(title: String) {
         _markerTitle.value = title
     }
-    
+
     @OptIn(ExperimentalUuidApi::class)
-    fun editMarkerUserId(userId: Uuid) {
+    fun editMarkerUserId(userId: String) {
         _markerUserId.value = userId
     }
 
     fun editMarkerCreatedAt(createdAt: String) {
         _markerCreatedAt.value = createdAt
     }
-    
+
     fun editMarkerCategory(category: String) {
         _markerCategory.value = category
     }
-    
+
     fun editMarkerLongitude(longitude: Double) {
         _markerLongitude.value = longitude
     }
-    
+
     fun editMarkerLatitude(latitude: Double) {
         _markerLatitude.value = latitude
     }

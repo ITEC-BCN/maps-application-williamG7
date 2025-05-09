@@ -39,6 +39,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.utils.Marker
 import com.example.mapsapp.viewmodels.MyViewModel
+import kotlinx.uuid.UUID
 import kotlinx.uuid.fromString
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -46,13 +47,13 @@ import kotlin.uuid.Uuid
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun MarkerScreen(navigateToDetailMarker: (String) -> Unit){
+fun MarkerListScreen(navigateToDetailMarker: (String) -> Unit){
 
     val myViewModel: MyViewModel = viewModel()
      val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
     myViewModel.getAllMarkers()
     val markerTitle: String by myViewModel.markerName.observeAsState("")
-    val markerUserId: Uuid by myViewModel.markerUserId.observeAsState(Uuid.fromString("00000000-0000-0000-0000-000000000000"))
+    val markerUserId: UUID by myViewModel.markerUserId.observeAsState(initialValue = Uuid.fromString("00000000-0000-0000-0000-000000000000"))
     val markerCreatedAt: String by myViewModel.markerCreatedAt.observeAsState("")
     val markerCategory: String by myViewModel.markerCategory.observeAsState("")
     val markerLongitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
