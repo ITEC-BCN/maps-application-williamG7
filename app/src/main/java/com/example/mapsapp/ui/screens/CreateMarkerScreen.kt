@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -43,7 +41,7 @@ import com.example.mapsapp.R
 import java.io.File
 
 @Composable
-fun CreateMarkerScreen(navigateBack: (String) -> Unit, onMarkerDetalle: () -> Boolean, onNavigateToList: () -> Unit) {
+fun CreateMarkerScreen(navigateBack: (String) -> Unit) {
 
     val contexto = LocalContext.current
     val imagenUri = remember { mutableStateOf<Uri?>(null) }

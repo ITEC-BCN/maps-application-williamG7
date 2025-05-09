@@ -24,13 +24,15 @@ import com.example.mapsapp.ui.screens.MarkerListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainNavigationWrapper(navController: NavHostController, padding: Modifier) {
+fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) {
 
     val navController = rememberNavController()
     NavHost(navController,Permisos) {
+        // permisos
         composable<Permisos>{
             PermisosScreen(navController.navigate(Drawer))
         }
+        // drawer
         composable<Drawer>{
             DrawerScreen(
                 onNavigateToMapp = { navController.navigate(Mapp) },
@@ -48,11 +50,7 @@ fun MainNavigationWrapper(navController: NavHostController, padding: Modifier) {
         }
 
         composable<CreateMarker>{
-            CreateMarkerScreen(
-                navigateBack = { navController.popBackStack() },
-                onMarkerDetalle = { navController.popBackStack() },
-                onNavigateToList = { navController.navigate(List) },
-            )
+            CreateMarkerScreen(navigateBack = { navController.popBackStack() })
         }
 
         composable<DetalleMarker> {
@@ -63,13 +61,12 @@ fun MainNavigationWrapper(navController: NavHostController, padding: Modifier) {
                 navigateBack = { navController.popBackStack() }
             )
         }
-
     }
 }
 
 
 
 
-    // permisos
 
-    // drawer
+
+

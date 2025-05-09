@@ -52,7 +52,7 @@ class MySuperBaseCliente {
     @OptIn(ExperimentalUuidApi::class)
     suspend fun insertMarker(
         title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double,
-        imageName: String, marker: Marker
+        image: String, marker: Marker
     ): PostgrestResult {
         return cliente.from("Marker").insert(marker)
     }

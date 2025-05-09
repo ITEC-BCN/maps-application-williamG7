@@ -40,6 +40,7 @@ import com.example.mapsapp.utils.Marker
 import com.example.mapsapp.viewmodels.MyViewModel
 import kotlinx.uuid.UUID
 import kotlinx.uuid.fromString
+import kotlinx.uuid.generateUUID
 import kotlin.uuid.ExperimentalUuidApi
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -51,7 +52,7 @@ fun MarkerListScreen(navigateToDetalleMarker: Unit){
      val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
     myViewModel.getAllMarkers()
     val markerTitle: String by myViewModel.markerName.observeAsState("")
-    val markerUserId: UUID by myViewModel.markerUserId.observeAsState("00000000-0000-0000-0000-000000000000")
+    val markerUserId: UUID by myViewModel.markerUserId.observeAsState(UUID.generateUUID())
     val markerCreatedAt: String by myViewModel.markerCreatedAt.observeAsState("")
     val markerCategory: String by myViewModel.markerCategory.observeAsState("")
     val markerLongitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
@@ -110,7 +111,7 @@ fun MarkerListScreen(navigateToDetalleMarker: Unit){
                         Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                     }
                 }) {
-                    MarkerItem(marker) { navigateToDetailMarker(marker.id.toString()) }
+                    MarkerItem(marker) { navigateToDetalleMarker(marker.id.toString()) }
                 }
             }
         }
@@ -118,7 +119,7 @@ fun MarkerListScreen(navigateToDetalleMarker: Unit){
 }
 
 @Composable
-fun MarkerItem(marker: Int, navigateToDetailMarker: (String) -> Unit) {
+fun MarkerItem(marker: Marker, navigateToDetailMarker: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

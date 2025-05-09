@@ -38,6 +38,9 @@ class MyViewModel {
     private val _markerLatitude = MutableLiveData<Double>()
     val markerLatitude = _markerLatitude
 
+    private val _markerImage = MutableLiveData<Bitmap>()
+    val markerImage = _markerImage
+
     private val _markersList = MutableLiveData<List<Marker>>()
     val markersList = _markersList
 
@@ -101,6 +104,7 @@ class MyViewModel {
                     _markerCategory.value = marker.category.toString()
                     _markerLongitude.value = marker.longitude
                     _markerLatitude.value = marker.latitude
+                    _markerImage.value = marker.image
                 }
             }
         }
@@ -129,6 +133,10 @@ class MyViewModel {
 
     fun editMarkerLatitude(latitude: Double) {
         _markerLatitude.value = latitude
+    }
+
+    fun editMarkerImage(image: Bitmap) {
+        _markerImage.value = image
     }
 }
 
