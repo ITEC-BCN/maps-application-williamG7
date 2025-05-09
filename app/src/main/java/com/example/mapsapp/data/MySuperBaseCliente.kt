@@ -13,11 +13,11 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 
 import io.github.jan.supabase.postgrest.result.PostgrestResult
+import kotlinx.uuid.UUID
 import java.time.LocalDateTime
 
 import java.time.format.DateTimeFormatter
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 class MySuperBaseCliente {
     lateinit var cliente: SupabaseClient
@@ -50,13 +50,16 @@ class MySuperBaseCliente {
 
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun insertMarker(title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double,imageName: String, marker: Marker): PostgrestResult {
+    suspend fun insertMarker(
+        title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double,
+        imageName: String, marker: Marker
+    ): PostgrestResult {
         return cliente.from("Marker").insert(marker)
     }
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun updateMarker(
-        id: String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
+        id: String, title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
     ): PostgrestResult {
         val imageName = storage.from("images").update(path = imageName, data = imageFile)
         return cliente.from("Marker").update({

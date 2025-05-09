@@ -1,5 +1,6 @@
 package com.example.mapsapp.ui.navigation
 
+import CreateMarkerScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -9,10 +10,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mapsapp.ui.navigation.Destination.CreateMarker
+import com.example.mapsapp.ui.navigation.Destination.DetalleMarker
 import com.example.mapsapp.ui.navigation.Destination.Drawer
 import com.example.mapsapp.ui.navigation.Destination.Mapp
 import com.example.mapsapp.ui.navigation.Destination.Permisos
-import com.example.mapsapp.ui.screens.CreateMarkerScreen
+import com.example.mapsapp.ui.navigation.Destination.List
+import com.example.mapsapp.ui.screens.DetalleMarkerScreen
 import com.example.mapsapp.ui.screens.PermisosScreen
 import com.example.mapsapp.ui.screens.DrawerScreen
 import com.example.mapsapp.ui.screens.MapScreen
@@ -21,7 +24,7 @@ import com.example.mapsapp.ui.screens.MarkerListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainNavigationWrapper(navController1: NavHostController, padding: Modifier) {
+fun MainNavigationWrapper(navController: NavHostController, padding: Modifier) {
 
     val navController = rememberNavController()
     NavHost(navController,Permisos) {
@@ -29,19 +32,38 @@ fun MainNavigationWrapper(navController1: NavHostController, padding: Modifier) 
             PermisosScreen(navController.navigate(Drawer))
         }
         composable<Drawer>{
-            DrawerScreen(navController.navigate(Mapp))
-        }
-        composable<Mapp>{
-            MapScreen(navController as Modifier)
-        }
-        composable<List>{
-            MarkerListScreen(
-                navigateToDetailMarker = TODO()
+            DrawerScreen(
+                onNavigateToMapp = { navController.navigate(Mapp) },
+                onNavigateToList = { navController.navigate(List) }
             )
         }
-        composable<CreateMarker>{
-            CreateMarkerScreen(navController as Modifier as (String) -> Unit)
+        composable<Mapp>{
+            MapScreen(
+                onNavigateToList = { navController.navigate(List) },
+                onNavigateToDetalleMarker = { navController.navigate(CreateMarker) }
+            )
         }
+        composable<List>{
+            MarkerListScreen(navController.navigate(DetalleMarker))
+        }
+
+        composable<CreateMarker>{
+            CreateMarkerScreen(
+                navigateBack = { navController.popBackStack() },
+                onMarkerDetalle = { navController.popBackStack() },
+                onNavigateToList = { navController.navigate(List) },
+            )
+        }
+
+        composable<DetalleMarker> {
+            backStackEntry ->
+            val markerId = backStackEntry.arguments?.getString("markerId") ?: ""
+            DetalleMarkerScreen(
+                markerId = markerId,
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+
     }
 }
 

@@ -1,6 +1,5 @@
 package com.example.mapsapp.ui.screens
 
-import android.R.attr.text
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -42,18 +41,17 @@ import com.example.mapsapp.viewmodels.MyViewModel
 import kotlinx.uuid.UUID
 import kotlinx.uuid.fromString
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun MarkerListScreen(navigateToDetailMarker: (String) -> Unit){
+fun MarkerListScreen(navigateToDetalleMarker: Unit){
 
     val myViewModel: MyViewModel = viewModel()
      val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
     myViewModel.getAllMarkers()
     val markerTitle: String by myViewModel.markerName.observeAsState("")
-    val markerUserId: UUID by myViewModel.markerUserId.observeAsState(initialValue = Uuid.fromString("00000000-0000-0000-0000-000000000000"))
+    val markerUserId: UUID by myViewModel.markerUserId.observeAsState("00000000-0000-0000-0000-000000000000")
     val markerCreatedAt: String by myViewModel.markerCreatedAt.observeAsState("")
     val markerCategory: String by myViewModel.markerCategory.observeAsState("")
     val markerLongitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
@@ -73,7 +71,7 @@ fun MarkerListScreen(navigateToDetailMarker: (String) -> Unit){
         ) {
             Text("Create new marker", fontSize = 28.sp, fontWeight = FontWeight.Bold)
             TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) })
-            TextField(value = userIdText, onValueChange = { myViewModel.editMarkerUserId(it) })
+            TextField(value = userIdText, onValueChange = { myViewModel.editMarkerUserId(UUID.fromString(it)) })
             TextField(value = markerCreatedAt, onValueChange = { myViewModel.editMarkerCreatedAt(it) })
             TextField(value = markerCategory, onValueChange = { myViewModel.editMarkerCategory(it) })
             TextField(value = markerLongitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) })
@@ -82,7 +80,7 @@ fun MarkerListScreen(navigateToDetailMarker: (String) -> Unit){
                 Text("Insert")
             }
         }
-        text("Markers List",
+        Text("Markers List",
             fontSize = 28.sp, fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center)
@@ -120,7 +118,7 @@ fun MarkerListScreen(navigateToDetailMarker: (String) -> Unit){
 }
 
 @Composable
-fun MarkerItem(marker: Marker, navigateToDetailMarker: (String) -> Unit) {
+fun MarkerItem(marker: Int, navigateToDetailMarker: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

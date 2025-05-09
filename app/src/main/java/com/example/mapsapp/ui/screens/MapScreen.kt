@@ -13,7 +13,8 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun MapScreen(modifier: Modifier = Modifier){
+fun MapScreen(onNavigateToList: () -> Unit, onNavigateToDetalleMarker: () -> Unit) {
+    val modifier: Modifier = Modifier
     Column(modifier.fillMaxSize()) {
         val itb = LatLng(41.4534225, 2.1837151)
 

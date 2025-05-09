@@ -13,7 +13,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.uuid.UUID
 import java.io.ByteArrayOutputStream
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 
 class MyViewModel {
@@ -22,7 +21,7 @@ class MyViewModel {
     private val _markerTitle = MutableLiveData<String>()
     val markerName = _markerTitle
 
-    private val _markerUserId = MutableLiveData<Uuid>()
+    private val _markerUserId = MutableLiveData<UUID>()
 
     @OptIn(ExperimentalUuidApi::class)
     val markerUserId = _markerUserId
@@ -67,7 +66,7 @@ class MyViewModel {
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun updateMarker(id: String, title: String, user_id: Uuid, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap? = null,
+    fun updateMarker(id: String, title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap? = null,
         currentImageUrl: String? = null
     ) {
         val stream = ByteArrayOutputStream()
@@ -112,7 +111,7 @@ class MyViewModel {
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun editMarkerUserId(userId: String) {
+    fun editMarkerUserId(userId: UUID) {
         _markerUserId.value = userId
     }
 

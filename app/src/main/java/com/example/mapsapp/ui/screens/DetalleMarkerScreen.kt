@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.viewmodels.MyViewModel
+import kotlinx.uuid.UUID
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -21,7 +22,7 @@ fun DetalleMarkerScreen(markerId: String, navigateBack: (String) -> Unit) {
     val myViewModel: MyViewModel = viewModel()
     myViewModel.getMarker(markerId)
     val markerTitle: String by  myViewModel.markerName.observeAsState("")
-    val markerUserId: String by myViewModel.markerUserId.observeAsState("")
+    val markerUserId: UUID by myViewModel.markerUserId.observeAsState("00000000-0000-0000-0000-000000000000")
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
         TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) })
         TextField(value = markerUserId, onValueChange = { myViewModel.editMarkerUserId(it) })
