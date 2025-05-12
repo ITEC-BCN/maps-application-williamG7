@@ -91,8 +91,8 @@ dependencies {
     implementation("app.softwork:kotlinx-uuid-core:0.0.21")
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
-    implementation("io.github.jan-tennert.supabase:storage-kt:$3.1.4")
     implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.github.jan-tennert.supabase:storage-kt:3.1.4")
 
 }
 

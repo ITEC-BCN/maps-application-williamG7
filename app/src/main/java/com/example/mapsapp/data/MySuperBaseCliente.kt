@@ -4,15 +4,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.mapsapp.BuildConfig
 import com.example.mapsapp.utils.Marker
-import com.google.android.gms.auth.api.signin.internal.Storage
+
 
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.postgrest
 
 import io.github.jan.supabase.postgrest.result.PostgrestResult
+import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.storage
 import kotlinx.uuid.UUID
 import java.time.LocalDateTime
 
@@ -25,7 +26,7 @@ class MySuperBaseCliente {
     private val SupabaseUrl = BuildConfig.SUPABASE_URL
     private val SupabaseKey = BuildConfig.SUPABASE_KEY
 
-    constructor(supabaseUrl: String, supabaseKey: String) {
+    constructor(function: () -> Unit) {
         cliente = createSupabaseClient(
             supabaseUrl = SupabaseUrl,
             supabaseKey = SupabaseKey
@@ -41,11 +42,9 @@ class MySuperBaseCliente {
     }
 
     suspend fun getMarker(id: String): Marker {
-        return cliente.postgrest["Marker"]
-            .select()
-            .eq("id", id)
-            .single()
-            .decode()
+        return cliente.from("Marker").select {
+            filter { eq("id", id) }
+        } .decodeSingle<Marker>()
     }
 
 
