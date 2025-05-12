@@ -68,8 +68,7 @@ fun DrawerScreen(onNavigateToMapp: () -> Unit, onNavigateToList: () -> Unit) {
                     }
                 )
             }
-        ) { innerPadding ->
-            MainNavigationWrapper(navController, Modifier.padding(innerPadding))
+        ) {
         }
 
     }
