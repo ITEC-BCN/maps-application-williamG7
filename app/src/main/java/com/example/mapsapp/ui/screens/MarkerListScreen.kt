@@ -39,14 +39,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.utils.Marker
 import com.example.mapsapp.viewmodels.MyViewModel
 import kotlinx.uuid.UUID
-import kotlinx.uuid.fromString
 import kotlinx.uuid.generateUUID
 import kotlin.uuid.ExperimentalUuidApi
+import androidx.compose.foundation.lazy.items
+
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun MarkerListScreen(navigateToDetalleMarker: Unit){
+fun MarkerListScreen(navigateToDetalleMarker1: String, navigateToDetalleMarker: (String) -> Unit){
 
     val myViewModel: MyViewModel = viewModel()
      val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
@@ -111,7 +113,7 @@ fun MarkerListScreen(navigateToDetalleMarker: Unit){
                         Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                     }
                 }) {
-                    MarkerItem(marker) { navigateToDetalleMarker(marker.id.toString()) }
+                    MarkerItem(marker){ navigateToDetalleMarker(marker.id.toString()) }
                 }
             }
         }
@@ -119,13 +121,13 @@ fun MarkerListScreen(navigateToDetalleMarker: Unit){
 }
 
 @Composable
-fun MarkerItem(marker: Marker, navigateToDetailMarker: (String) -> Unit) {
+fun MarkerItem(marker: Marker, navigateToDetalleMarker: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray)
             .border(width = 2.dp, Color.DarkGray)
-            .clickable { navigateToDetailMarker(marker.id.toString()) }
+            .clickable { navigateToDetalleMarker(marker.id.toString()) }
     ) {
         Row(
             Modifier.fillMaxWidth(),

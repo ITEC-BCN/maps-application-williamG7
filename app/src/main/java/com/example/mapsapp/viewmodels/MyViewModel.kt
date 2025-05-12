@@ -38,7 +38,7 @@ class MyViewModel {
     private val _markerLatitude = MutableLiveData<Double>()
     val markerLatitude = _markerLatitude
 
-    private val _markerImage = MutableLiveData<Bitmap>()
+    private val _markerImage = MutableLiveData<String?>()
     val markerImage = _markerImage
 
     private val _markersList = MutableLiveData<List<Marker>>()
@@ -64,7 +64,8 @@ class MyViewModel {
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
         CoroutineScope(Dispatchers.IO).launch {
             val imageName = dataBase.uploadImage(stream.toByteArray())
-            dataBase.insertMarker(title, user_id, created_at, category, longitude, latitude, imageName)
+            dataBase.insertMarker(title, user_id, created_at, category, longitude, latitude, imageName,
+                Marker)
         }
     }
 
@@ -135,7 +136,7 @@ class MyViewModel {
         _markerLatitude.value = latitude
     }
 
-    fun editMarkerImage(image: Bitmap) {
+    fun editMarkerImage(image: String) {
         _markerImage.value = image
     }
 }

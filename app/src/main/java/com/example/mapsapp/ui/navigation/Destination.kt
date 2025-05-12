@@ -20,7 +20,6 @@ open class Destination {
     object CreateMarker : Destination()
 
     @Serializable
-    object  DetalleMarker : Destination()
-
+    data class DetalleMarker(val markerId: String)
 
 }

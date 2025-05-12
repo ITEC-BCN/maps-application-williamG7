@@ -26,7 +26,7 @@ class MySuperBaseCliente {
     private val SupabaseUrl = BuildConfig.SUPABASE_URL
     private val SupabaseKey = BuildConfig.SUPABASE_KEY
 
-    constructor(function: () -> Unit) {
+    constructor(supabaseUrl: String, supabaseKey: String) {
         cliente = createSupabaseClient(
             supabaseUrl = SupabaseUrl,
             supabaseKey = SupabaseKey
@@ -51,7 +51,7 @@ class MySuperBaseCliente {
     @OptIn(ExperimentalUuidApi::class)
     suspend fun insertMarker(
         title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double,
-        image: String, marker: Marker
+        image: String, marker: Marker.Companion
     ): PostgrestResult {
         return cliente.from("Marker").insert(marker)
     }

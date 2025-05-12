@@ -4,11 +4,10 @@ import CreateMarkerScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.mapsapp.ui.navigation.Destination.CreateMarker
 import com.example.mapsapp.ui.navigation.Destination.DetalleMarker
 import com.example.mapsapp.ui.navigation.Destination.Drawer
@@ -24,8 +23,7 @@ import com.example.mapsapp.ui.screens.MarkerListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) {
-
+fun MainNavigationWrapper() {
     val navController = rememberNavController()
     NavHost(navController,Permisos) {
         // permisos
@@ -46,20 +44,22 @@ fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) 
             )
         }
         composable<List>{
-            MarkerListScreen(navController.navigate(DetalleMarker))
+            MarkerListScreen(id.toString()) { id ->
+                navController.navigate(DetalleMarker(id.toString()))
+            }
+
         }
 
         composable<CreateMarker>{
             CreateMarkerScreen(navigateBack = { navController.popBackStack() })
         }
 
-        composable<DetalleMarker> {
-            backStackEntry ->
-            val markerId = backStackEntry.arguments?.getString("markerId") ?: ""
-            DetalleMarkerScreen(
-                markerId = markerId,
-                navigateBack = { navController.popBackStack() }
-            )
+        composable<DetalleMarker> { backStackEntry ->
+            val markerId = backStackEntry.toRoute<DetalleMarker>()
+            DetalleMarkerScreen(markerId.markerId){
+                navController.navigate (List) { popUpTo<List> { inclusive = true }
+            }
+            }
         }
     }
 }
