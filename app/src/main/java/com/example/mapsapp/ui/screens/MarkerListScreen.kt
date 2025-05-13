@@ -1,5 +1,6 @@
 package com.example.mapsapp.ui.screens
 
+import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -24,9 +25,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,7 +43,7 @@ import kotlinx.uuid.UUID
 import kotlinx.uuid.generateUUID
 import kotlin.uuid.ExperimentalUuidApi
 import androidx.compose.foundation.lazy.items
-
+import androidx.compose.runtime.setValue
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -59,6 +60,9 @@ fun MarkerListScreen(navigateToDetalleMarker1: String, navigateToDetalleMarker: 
     val markerCategory: String by myViewModel.markerCategory.observeAsState("")
     val markerLongitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
     val markerLatitude: Double by myViewModel.markerLatitude.observeAsState(0.0)
+    val markerImage: String by myViewModel.markerImage.observeAsState("")
+    
+    val userImage by remember { mutableStateOf<Bitmap?>(null) }
 
     var userIdText by remember { mutableStateOf(markerUserId.toString()) }
 
@@ -79,7 +83,8 @@ fun MarkerListScreen(navigateToDetalleMarker1: String, navigateToDetalleMarker: 
             TextField(value = markerCategory, onValueChange = { myViewModel.editMarkerCategory(it) })
             TextField(value = markerLongitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) })
             TextField(value = markerLatitude.toString(), onValueChange = { myViewModel.editMarkerLatitude(it.toDouble()) })
-            Button(onClick = { myViewModel.insertNewMarker(markerTitle, markerUserId, markerCreatedAt, markerCategory, markerLongitude, markerLatitude) }) {
+            TextField(value = markerImage.toString(), onValueChange = { myViewModel.editMarkerImage(it) })
+            Button(onClick = { myViewModel.insertNewMarker(markerTitle, markerUserId, markerCreatedAt, markerCategory, markerLongitude, markerLatitude,userImage) }) {
                 Text("Insert")
             }
         }

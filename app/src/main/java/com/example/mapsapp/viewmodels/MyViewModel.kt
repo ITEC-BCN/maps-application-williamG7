@@ -38,7 +38,7 @@ class MyViewModel {
     private val _markerLatitude = MutableLiveData<Double>()
     val markerLatitude = _markerLatitude
 
-    private val _markerImage = MutableLiveData<String?>()
+    private val _markerImage = MutableLiveData<String>()
     val markerImage = _markerImage
 
     private val _markersList = MutableLiveData<List<Marker>>()
@@ -58,7 +58,7 @@ class MyViewModel {
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalUuidApi::class)
     fun insertNewMarker(
-        title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap? = null
+        title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap?
     ) {
         val stream = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
