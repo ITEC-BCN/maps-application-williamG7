@@ -6,6 +6,7 @@ import com.example.mapsapp.BuildConfig
 import com.example.mapsapp.utils.Marker
 
 
+
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest

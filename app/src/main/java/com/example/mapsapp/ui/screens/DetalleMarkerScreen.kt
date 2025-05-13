@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.viewmodels.MyViewModel
 import kotlinx.uuid.UUID
@@ -47,4 +48,5 @@ fun DetalleMarkerScreen(markerId: String, navigateBack:() -> Unit) {
     }
 
 }
+
 

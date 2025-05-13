@@ -4,6 +4,8 @@ import CreateMarkerScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,12 +25,14 @@ import com.example.mapsapp.ui.screens.MarkerListScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainNavigationWrapper() {
+fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) {
     val navController = rememberNavController()
     NavHost(navController,Permisos) {
         // permisos
         composable<Permisos>{
-            PermisosScreen(navController.navigate(Drawer))
+            PermisosScreen(){
+                navController.navigate(Drawer)
+            }
         }
         // drawer
         composable<Drawer>{

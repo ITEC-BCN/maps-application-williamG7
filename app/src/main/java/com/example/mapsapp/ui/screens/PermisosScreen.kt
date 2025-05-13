@@ -31,11 +31,12 @@ import com.example.mapsapp.utils.PermisosEstado
 import com.example.mapsapp.viewmodels.PermisosViewModel
 import android.provider.Settings
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun PermisosScreen(navigateDrawer: Unit) {
+fun PermisosScreen(navigateDrawer: () -> Unit) {
     val context = LocalContext.current
     val miViewModel = viewModel<PermisosViewModel>()
     val estadoPermisos = miViewModel.permisosEstado.value
@@ -117,5 +118,7 @@ fun PermisosScreen(navigateDrawer: Unit) {
         }
     }
 }
+
+
 
 
