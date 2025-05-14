@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.mapsapp.ui.navigation.MainNavigationWrapper
 import com.example.mapsapp.utils.DrawerItem
@@ -49,7 +50,14 @@ fun DrawerScreen(onNavigateToMapp: () -> Unit, onNavigateToList: () -> Unit) {
                         onClick = {
                             selectedItemIndex = index
                             scope.launch { drawerState.close() }
-                            navController.navigate(drawerItem.route)
+                            when (drawerItem) {
+                                DrawerItem.MAPP -> {
+                                    onNavigateToMapp()
+                                }
+                                DrawerItem.LIST -> {
+                                    onNavigateToList()
+                                }
+                            }
                         }
                     )
                 }
@@ -60,7 +68,7 @@ fun DrawerScreen(onNavigateToMapp: () -> Unit, onNavigateToList: () -> Unit) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(" App") },
+                    title = { Text(" Mapps APP William") },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
@@ -78,3 +86,15 @@ fun DrawerScreen(onNavigateToMapp: () -> Unit, onNavigateToList: () -> Unit) {
     }
 }
 
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+
+@Composable
+fun DrawerScreenPreview() {
+    DrawerScreen(
+        onNavigateToMapp = {},
+        onNavigateToList = {}
+    )
+}

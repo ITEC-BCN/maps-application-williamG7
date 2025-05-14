@@ -12,7 +12,6 @@ enum class DrawerItem(
     val text: String,
     val route: Destination
 ) {
-    HOME(Icons.Default.Home, "Home", Destination.Permisos),
-    SETTINGS(Icons.Default.Settings, "Settings", Destination.Drawer),
-    ABOUT(Icons.Default.Info, "About", Destination.Mapp),
+    MAPP(Icons.Default.Home, "Mapa", Destination.Mapp),
+    LIST(Icons.Default.Info, "Lista", Destination.List)
 }

@@ -2,7 +2,6 @@ package com.example.mapsapp.ui.screens
 
 import androidx.compose.runtime.Composable
 import android.Manifest
-import android.R.attr.data
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -31,7 +30,6 @@ import com.example.mapsapp.utils.PermisosEstado
 import com.example.mapsapp.viewmodels.PermisosViewModel
 import android.provider.Settings
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
 

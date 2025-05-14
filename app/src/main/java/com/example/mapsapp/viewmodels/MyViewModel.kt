@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.mapsapp.MyApp
 import com.example.mapsapp.utils.Marker
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +16,7 @@ import java.io.ByteArrayOutputStream
 import kotlin.uuid.ExperimentalUuidApi
 
 
-class MyViewModel {
+class MyViewModel: ViewModel(){
     val dataBase = MyApp.dataBase
 
     private val _markerTitle = MutableLiveData<String>()
@@ -58,14 +59,28 @@ class MyViewModel {
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalUuidApi::class)
     fun insertNewMarker(
-        title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap?
+        title: String,
+        user_id: UUID,
+        created_at: String,
+        category: String,
+        longitude: Double,
+        latitude: Double,
+        image: Bitmap? = null
     ) {
+        val marker = Marker(
+            title = title,
+            user_id = user_id,
+            created_at = created_at,
+            longitude = longitude,
+            category = category,
+            latitude = latitude,
+            image = "marker_${System.currentTimeMillis()}.png"
+        )
         val stream = ByteArrayOutputStream()
         image?.compress(Bitmap.CompressFormat.PNG, 0, stream)
         CoroutineScope(Dispatchers.IO).launch {
             val imageName = dataBase.uploadImage(stream.toByteArray())
-            dataBase.insertMarker(title, user_id, created_at, category, longitude, latitude, imageName,
-                Marker)
+            dataBase.insertMarker(marker)
         }
     }
 

@@ -44,7 +44,7 @@ fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) 
         composable<Mapp>{
             MapScreen(
                 onNavigateToList = { navController.navigate(List) },
-                onNavigateToDetalleMarker = { navController.navigate(CreateMarker) },
+                onNavigateToDetalleMarker = { navController.navigate(CreateMarker(lat = 0.0, lon = 0.0)) },
                 navController = navController
             )
         }

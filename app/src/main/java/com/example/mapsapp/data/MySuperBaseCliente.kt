@@ -2,7 +2,6 @@ package com.example.mapsapp.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Updater
 import com.example.mapsapp.BuildConfig
 import com.example.mapsapp.utils.Marker
 
@@ -51,10 +50,7 @@ class MySuperBaseCliente {
 
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun insertMarker(
-        title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double,
-        image: String, marker: Marker.Companion
-    ): PostgrestResult {
+    suspend fun insertMarker(marker: Marker): PostgrestResult {
         return cliente.from("Marker").insert(marker)
     }
 
