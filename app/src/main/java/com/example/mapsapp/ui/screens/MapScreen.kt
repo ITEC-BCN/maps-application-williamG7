@@ -54,6 +54,7 @@ fun MapScreen(onNavigateToList: () -> Unit,
                         lon = it.longitude
                     )
                 )
+
             }
         ){
             // Mostrar todos los marcadores

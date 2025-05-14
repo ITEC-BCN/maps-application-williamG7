@@ -6,9 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
-import com.example.mapsapp.ui.navigation.MainNavigationWrapper
+import com.example.mapsapp.ui.navigation.InternalNavigationWrapper
 import com.example.mapsapp.ui.theme.MapsAppTheme
 
 
@@ -19,10 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MapsAppTheme {
-                MainNavigationWrapper(
-                    navController = rememberNavController(),
-                    modifier = Modifier
-                )
+               InternalNavigationWrapper()
             }
         }
     }

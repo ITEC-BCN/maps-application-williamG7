@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -43,7 +44,9 @@ import kotlinx.uuid.UUID
 import kotlinx.uuid.generateUUID
 import kotlin.uuid.ExperimentalUuidApi
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
+import coil.compose.AsyncImage
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -65,6 +68,11 @@ fun MarkerListScreen(navigateToDetalleMarker1: String, navigateToDetalleMarker: 
     val userImage by remember { mutableStateOf<Bitmap?>(null) }
 
     var userIdText by remember { mutableStateOf(markerUserId.toString()) }
+
+    // Cargar marcadores al entrar
+    LaunchedEffect(Unit) {
+        myViewModel.getAllMarkers()
+    }
 
     Column(
         Modifier.fillMaxSize()
@@ -134,13 +142,22 @@ fun MarkerItem(marker: Marker, navigateToDetalleMarker: (String) -> Unit) {
             .border(width = 2.dp, Color.DarkGray)
             .clickable { navigateToDetalleMarker(marker.id.toString()) }
     ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(marker.title, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            Text(text = "User ID: ${marker.id}")
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center)
+        {
+            AsyncImage(
+                model = marker.image,
+                contentDescription = "Marker Image",
+                modifier = Modifier
+                    .size(64.dp)
+                    .padding(end = 12.dp)
+            )
+            Column{
+                Text(marker.title, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                Text(text = "User ID: ${marker.id}")
+                Text(text = "Created At: ${marker.created_at}")
+                Text(text = "Category: ${marker.category}")
+            }
+
         }
     }
 }
