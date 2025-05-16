@@ -12,16 +12,22 @@ import com.example.mapsapp.ui.screens.PermisosScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun InternalNavigationWrapper( ) {
+fun InternalNavigationWrapper(){
     val navController = rememberNavController()
     NavHost(navController, startDestination = Destination.Permisos) {
         composable<Destination.Permisos>{
             PermisosScreen(){
-                navController.navigate(Destination.Drawer)
+                navController.navigate(Destination.Drawer){
+                popUpTo<Destination.Permisos> { inclusive = true }
+                }
             }
         }
         composable<Destination.Drawer> {
-            DrawerScreen()
+            DrawerScreen(){
+                navController.navigate(Destination.Permisos){
+                    popUpTo<Destination.Drawer> { inclusive = true }
+                }
+            }
         }
     }
 

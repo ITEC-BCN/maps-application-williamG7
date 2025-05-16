@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,22 +22,29 @@ import com.example.mapsapp.ui.screens.PermisosScreen
 import com.example.mapsapp.ui.screens.DrawerScreen
 import com.example.mapsapp.ui.screens.MapScreen
 import com.example.mapsapp.ui.screens.MarkerListScreen
+import com.example.mapsapp.viewmodels.MyViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) {
+    val MyViewModel: MyViewModel = viewModel()
     val navController = rememberNavController()
     NavHost(navController,Permisos) {
         // permisos
         composable<Permisos>{
             PermisosScreen(){
-                navController.navigate(Drawer)
+                navController.navigate(Drawer){
+                    popUpTo<Permisos> { inclusive = true }
+                }
             }
         }
         // drawer
         composable<Drawer>{
-            DrawerScreen()
+            DrawerScreen {
+                navController.navigate(Permisos) {
+                }
+            }
         }
         composable<Mapp>{
             MapScreen(
@@ -46,9 +54,7 @@ fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) 
             )
         }
         composable<List>{
-            MarkerListScreen(id.toString()) { id ->
-                navController.navigate(DetalleMarker(id.toString()))
-            }
+            MarkerListScreen(MyViewModel)
 
         }
 

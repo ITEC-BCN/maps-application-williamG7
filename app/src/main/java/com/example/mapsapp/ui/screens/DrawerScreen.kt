@@ -28,17 +28,16 @@ import com.example.mapsapp.ui.navigation.MainNavigationWrapper
 import com.example.mapsapp.utils.DrawerItem
 import kotlinx.coroutines.launch
 
-
-
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerScreen() {
+fun DrawerScreen(function: () -> Unit) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by remember { mutableStateOf(0) }
     ModalNavigationDrawer(
+        gesturesEnabled = false,
         drawerContent = {
             ModalDrawerSheet {
                 DrawerItem.entries.forEachIndexed { index, drawerItem ->

@@ -197,4 +197,39 @@ fun createImageUri(contexto: Context): Uri? {
 }
 
 
+//Column(
+//            Modifier
+//                .fillMaxWidth()
+//                .weight(0.4f),
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.Center
+//        ) {
+//            Text("Create new marker", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+//            TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) })
+//            TextField(value = userIdText, onValueChange = { myViewModel.editMarkerUserId(UUID(it)) })
+//            TextField(value = markerCreatedAt, onValueChange = { myViewModel.editMarkerCreatedAt(it) })
+//            TextField(value = markerCategory, onValueChange = { myViewModel.editMarkerCategory(it) })
+//            TextField(value = markerLongitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) })
+//            TextField(value = markerLatitude.toString(), onValueChange = { myViewModel.editMarkerLatitude(it.toDouble()) })
+//            TextField(value = markerImage.toString(), onValueChange = { myViewModel.editMarkerImage(it) })
+//            Button(onClick = { myViewModel.insertNewMarker(markerTitle, markerUserId, markerCreatedAt, markerCategory, markerLongitude, markerLatitude,userImage) }) {
+//                Text("Insert")
+//            }
+//        }
+
+
+//  val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
+//    myViewModel.getAllMarkers()
+//    val markerTitle: String by myViewModel.markerName.observeAsState("")
+//    val markerUserId: UUID by myViewModel.markerUserId.observeAsState(UUID.generateUUID())
+//    val markerCreatedAt: String by myViewModel.markerCreatedAt.observeAsState("")
+//    val markerCategory: String by myViewModel.markerCategory.observeAsState("")
+//    val markerLongitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
+//    val markerLatitude: Double by myViewModel.markerLatitude.observeAsState(0.0)
+//    val markerImage: String by myViewModel.markerImage.observeAsState("")
+//
+//    val userImage by remember { mutableStateOf<Bitmap?>(null) }
+//    var userIdText by remember { mutableStateOf(markerUserId.toString()) }
+
+
 

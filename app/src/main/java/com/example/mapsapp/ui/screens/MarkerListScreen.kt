@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -37,65 +36,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.utils.Marker
-import com.example.mapsapp.viewmodels.MyViewModel
-import kotlinx.uuid.UUID
-import kotlinx.uuid.generateUUID
 import kotlin.uuid.ExperimentalUuidApi
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.setValue
-import coil.compose.AsyncImage
+import androidx.lifecycle.ViewModel
+import com.example.mapsapp.viewmodels.MyViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun MarkerListScreen(navigateToDetalleMarker1: String, navigateToDetalleMarker: (String) -> Unit){
+fun MarkerListScreen(myViewModel:ViewModel,navigateToDetalleMarker: (Int) -> Unit) {
 
-    val myViewModel: MyViewModel = viewModel()
-     val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
+    val showLoading: Boolean by myViewModel.loading.observeAsState(true)
+    val markersList by myViewModel.markersList.observeAsState(emptyList())
+
     myViewModel.getAllMarkers()
-    val markerTitle: String by myViewModel.markerName.observeAsState("")
-    val markerUserId: UUID by myViewModel.markerUserId.observeAsState(UUID.generateUUID())
-    val markerCreatedAt: String by myViewModel.markerCreatedAt.observeAsState("")
-    val markerCategory: String by myViewModel.markerCategory.observeAsState("")
-    val markerLongitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
-    val markerLatitude: Double by myViewModel.markerLatitude.observeAsState(0.0)
-    val markerImage: String by myViewModel.markerImage.observeAsState("")
-    
-    val userImage by remember { mutableStateOf<Bitmap?>(null) }
-
-    var userIdText by remember { mutableStateOf(markerUserId.toString()) }
-
-    // Cargar marcadores al entrar
-    LaunchedEffect(Unit) {
-        myViewModel.getAllMarkers()
-    }
 
     Column(
         Modifier.fillMaxSize()
     ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .weight(0.4f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Create new marker", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) })
-            TextField(value = userIdText, onValueChange = { myViewModel.editMarkerUserId(UUID(it)) })
-            TextField(value = markerCreatedAt, onValueChange = { myViewModel.editMarkerCreatedAt(it) })
-            TextField(value = markerCategory, onValueChange = { myViewModel.editMarkerCategory(it) })
-            TextField(value = markerLongitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) })
-            TextField(value = markerLatitude.toString(), onValueChange = { myViewModel.editMarkerLatitude(it.toDouble()) })
-            TextField(value = markerImage.toString(), onValueChange = { myViewModel.editMarkerImage(it) })
-            Button(onClick = { myViewModel.insertNewMarker(markerTitle, markerUserId, markerCreatedAt, markerCategory, markerLongitude, markerLatitude,userImage) }) {
-                Text("Insert")
-            }
-        }
+
         Text("Markers List",
             fontSize = 28.sp, fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
@@ -126,7 +87,9 @@ fun MarkerListScreen(navigateToDetalleMarker1: String, navigateToDetalleMarker: 
                         Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                     }
                 }) {
-                    MarkerItem(marker){ navigateToDetalleMarker(marker.id.toString()) }
+                    MarkerItem(marker = marker){
+                        marker.id?.let { navigateToDetalleMarker(it) }
+                    }
                 }
             }
         }
@@ -134,30 +97,21 @@ fun MarkerListScreen(navigateToDetalleMarker1: String, navigateToDetalleMarker: 
 }
 
 @Composable
-fun MarkerItem(marker: Marker, navigateToDetalleMarker: (String) -> Unit) {
+fun MarkerItem(marker: Marker, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray)
             .border(width = 2.dp, Color.DarkGray)
-            .clickable { navigateToDetalleMarker(marker.id.toString()) }
+            .clickable { onClick() }
     ) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center)
-        {
-            AsyncImage(
-                model = marker.image,
-                contentDescription = "Marker Image",
-                modifier = Modifier
-                    .size(64.dp)
-                    .padding(end = 12.dp)
-            )
+        Row(Modifier.fillMaxWidth().fillMaxSize()) {
             Column{
                 Text(marker.title, fontSize = 28.sp, fontWeight = FontWeight.Bold)
                 Text(text = "User ID: ${marker.id}")
                 Text(text = "Created At: ${marker.created_at}")
                 Text(text = "Category: ${marker.category}")
             }
-
         }
     }
 }
