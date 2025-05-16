@@ -60,6 +60,9 @@ android {
         compose = true
         buildConfig = true
     }
+    configurations.all {
+        exclude(group = "xmlpull", module = "xmlpull")
+    }
 }
 
 dependencies {
