@@ -45,7 +45,12 @@ class MyViewModel: ViewModel(){
     private val _markersList = MutableLiveData<List<Marker>>()
     val markersList = _markersList
 
+    private val _loading = MutableLiveData<Boolean>()
+    val loading = _loading
+
     private var _selectedMarker: Marker? = null
+
+
 
     fun getAllMarkers(){
         CoroutineScope(Dispatchers.IO).launch {
@@ -99,7 +104,7 @@ class MyViewModel: ViewModel(){
         }
     }
 
-    fun deleteMarker(id: String, image: String){
+    fun deleteMarker(id: Int, image: String){
         CoroutineScope(Dispatchers.IO).launch {
             dataBase.deleteMarker(id.toString())
             dataBase.deleteImage(image)

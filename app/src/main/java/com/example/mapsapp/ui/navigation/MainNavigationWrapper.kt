@@ -54,8 +54,9 @@ fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) 
             )
         }
         composable<List>{
-            MarkerListScreen(MyViewModel)
-
+            MarkerListScreen(navigateToDetalleMarker = { markerId ->
+                navController.navigate(DetalleMarker(markerId.toString()))
+            })
         }
 
         composable<CreateMarker>{

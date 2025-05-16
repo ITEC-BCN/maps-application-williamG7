@@ -6,7 +6,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @Serializable
 class Marker @OptIn(ExperimentalUuidApi::class) constructor(
-    val id: Int? = null,
+    val id: Int = 0,
     val title: String,
     val user_id: UUID,
     val created_at: String,
