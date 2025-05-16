@@ -44,7 +44,9 @@ fun MarkerListScreen(navigateToDetalleMarker: (Int) -> Unit) {
     val showLoading: Boolean by myViewModel.loading.observeAsState(true)
     val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
 
-    myViewModel.getAllMarkers()
+    LaunchedEffect(Unit) {
+        myViewModel.getAllMarkers()
+    }
 
     LazyColumn(Modifier.fillMaxWidth().padding(top = 150.dp)) {
         items(markersList) { marker ->

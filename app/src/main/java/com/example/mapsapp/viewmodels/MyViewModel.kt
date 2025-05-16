@@ -50,8 +50,6 @@ class MyViewModel: ViewModel(){
 
     private var _selectedMarker: Marker? = null
 
-
-
     fun getAllMarkers(){
         CoroutineScope(Dispatchers.IO).launch {
             val dataBaseMarkers = dataBase.getAllMarkers()

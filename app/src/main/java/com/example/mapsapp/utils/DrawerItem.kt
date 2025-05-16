@@ -3,6 +3,8 @@ package com.example.mapsapp.utils
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.mapsapp.ui.navigation.Destination
@@ -12,6 +14,6 @@ enum class DrawerItem(
     val text: String,
     val route: Destination
 ) {
-    MAPP(Icons.Default.Home, "Mapa", Destination.Mapp),
-    LIST(Icons.Default.Info, "Lista", Destination.List)
+    MAPP(Icons.Default.LocationOn, "Mapa", Destination.Mapp),
+    LIST(Icons.Default.List, "Lista", Destination.List)
 }
