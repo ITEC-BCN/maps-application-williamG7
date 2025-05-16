@@ -36,10 +36,7 @@ fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) 
         }
         // drawer
         composable<Drawer>{
-            DrawerScreen(
-                onNavigateToMapp = { navController.navigate(Mapp) },
-                onNavigateToList = { navController.navigate(List) }
-            )
+            DrawerScreen()
         }
         composable<Mapp>{
             MapScreen(

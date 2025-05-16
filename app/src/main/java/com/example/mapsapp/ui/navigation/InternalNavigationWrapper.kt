@@ -21,10 +21,7 @@ fun InternalNavigationWrapper( ) {
             }
         }
         composable<Destination.Drawer> {
-            DrawerScreen(
-                onNavigateToMapp = { navController.navigate(Destination.Mapp) },
-                onNavigateToList = { navController.navigate(Destination.List) }
-            )
+            DrawerScreen()
         }
     }
 

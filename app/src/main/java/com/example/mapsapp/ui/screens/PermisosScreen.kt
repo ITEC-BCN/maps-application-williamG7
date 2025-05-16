@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,12 +30,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.utils.PermisosEstado
 import com.example.mapsapp.viewmodels.PermisosViewModel
 import android.provider.Settings
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun PermisosScreen(navigateDrawer: () -> Unit) {
+fun PermisosScreen(navigateToDrawer: () -> Unit) {
     val context = LocalContext.current
     val miViewModel = viewModel<PermisosViewModel>()
     val estadoPermisos = miViewModel.permisosEstado.value
@@ -53,62 +55,69 @@ fun PermisosScreen(navigateDrawer: () -> Unit) {
             val concedido = resultados[permiso] ?: false
             val estado = when {
                 concedido -> PermisosEstado.Concedido
-                ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permiso) ->
-                    PermisosEstado.Denegado
+                ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, permiso)
+                    -> PermisosEstado.Denegado
+
                 else -> PermisosEstado.DenegadoPermanentemente
             }
             miViewModel.updatePermisosEstado(permiso, estado)
         }
     }
-
     LaunchedEffect(Unit) {
         if (!yaSolicitado) {
             yaSolicitado = true
             launcher.launch(permisos.toTypedArray())
         }
     }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Estado de permisos:", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Estado de permisos:", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-        if (estadoPermisos.isEmpty()) {
-            CircularProgressIndicator()
-            Text("Solicitando permisos...")
-        } else {
             permisos.forEach { permiso ->
                 val estado = estadoPermisos[permiso]
-                val nombrePermiso = permiso.split(".").last()
                 val textoEstado = when (estado) {
+                    null -> "Solicitando..."
                     PermisosEstado.Concedido -> "Concedido"
                     PermisosEstado.Denegado -> "Denegado"
                     PermisosEstado.DenegadoPermanentemente -> "Denegado permanentemente"
-                    else -> "Desconocido"
                 }
+                val nombrePermiso = permiso.removePrefix("android.permisos.")
                 Text("$nombrePermiso: $textoEstado")
-                Spacer(modifier = Modifier.height(8.dp))
             }
+            Spacer(modifier = Modifier.height(16.dp))
 
-            if (estadoPermisos.any { it.value == PermisosEstado.Denegado }) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = {
+            if (permisos.all {
+                estadoPermisos[it] == PermisosEstado.Concedido
+            }) {
+                navigateToDrawer()
+            }
+            else if (permisos.any{
+                    estadoPermisos[it] == PermisosEstado.Denegado
+                }){
+                Button(onClick ={
                     launcher.launch(permisos.toTypedArray())
                 }) {
-                    Text("Solicitar nuevamente")
+                    Text("Aplicar de nuevo")
                 }
             }
-
-            if (estadoPermisos.any { it.value == PermisosEstado.DenegadoPermanentemente }) {
+            else if (permisos.any{
+                  estadoPermisos[it] == PermisosEstado.DenegadoPermanentemente
+                }){
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = {
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        data = Uri.fromParts("package", context.packageName, null)
+                        data = Uri.fromParts("package", context!!.packageName, null)
                     }
-                    context.startActivity(intent)
+                    context!!.startActivity(intent)
                 }) {
                     Text("Ir a configuración")
                 }
@@ -116,6 +125,9 @@ fun PermisosScreen(navigateDrawer: () -> Unit) {
         }
     }
 }
+
+
+
 
 
 
