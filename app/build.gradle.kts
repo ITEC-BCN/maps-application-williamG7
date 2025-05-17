@@ -29,15 +29,16 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField(
-            type = "String",
-            name = "SUPABASE_URL",
-            value = "\"${localProps.getProperty("supabaseUrl") ?: ""}\""
+            "String",
+            "SUPABASE_URL",
+            "\"${localProps.getProperty("supabaseUrl")}\""
         )
         buildConfigField(
-            type = "String",
-            name = "SUPABASE_KEY",
-            value = "\"${localProps.getProperty("supabaseKey") ?: ""}\""
+            "String",
+            "SUPABASE_KEY",
+            "\"${localProps.getProperty("supabaseKey")}\""
         )
+
     }
 
     buildTypes {
@@ -75,6 +76,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.safe.args.generator)
+    implementation(libs.androidx.media3.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

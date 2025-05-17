@@ -9,17 +9,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.mapsapp.ui.navigation.Destination.CreateMarker
 import com.example.mapsapp.ui.navigation.Destination.DetalleMarker
-import com.example.mapsapp.ui.navigation.Destination.Drawer
 import com.example.mapsapp.ui.navigation.Destination.Mapp
-import com.example.mapsapp.ui.navigation.Destination.Permisos
 import com.example.mapsapp.ui.navigation.Destination.List
 import com.example.mapsapp.ui.screens.DetalleMarkerScreen
-import com.example.mapsapp.ui.screens.PermisosScreen
-import com.example.mapsapp.ui.screens.DrawerScreen
 import com.example.mapsapp.ui.screens.MapScreen
 import com.example.mapsapp.ui.screens.MarkerListScreen
 import com.example.mapsapp.viewmodels.MyViewModel
@@ -27,47 +22,35 @@ import com.example.mapsapp.viewmodels.MyViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier) {
-    val MyViewModel: MyViewModel = viewModel()
-    val navController = rememberNavController()
-    NavHost(navController,Permisos) {
-        // permisos
-        composable<Permisos>{
-            PermisosScreen(){
-                navController.navigate(Drawer){
-                    popUpTo<Permisos> { inclusive = true }
-                }
-            }
-        }
-        // drawer
-        composable<Drawer>{
-            DrawerScreen {
-                navController.navigate(Permisos) {
-                }
-            }
-        }
-        composable<Mapp>{
+fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier){
+    
+    NavHost(navController, startDestination = Mapp) {
+        composable<Mapp> {
             MapScreen(
                 onNavigateToList = { navController.navigate(List) },
                 onNavigateToDetalleMarker = { navController.navigate(CreateMarker(lat = 0.0, lon = 0.0)) },
                 navController = navController
             )
         }
-        composable<List>{
+
+        composable<CreateMarker> {
+            val createMarker = it.toRoute<CreateMarker>()
+            CreateMarkerScreen( latitud = createMarker.lat, longitud = createMarker.lon,
+                navigateBack = { navController.popBackStack() })
+        }
+
+        composable<List> {
             MarkerListScreen(navigateToDetalleMarker = { markerId ->
                 navController.navigate(DetalleMarker(markerId.toString()))
             })
         }
 
-        composable<CreateMarker>{
-            CreateMarkerScreen(navigateBack = { navController.popBackStack() })
-        }
-
-        composable<DetalleMarker> { backStackEntry ->
-            val markerId = backStackEntry.toRoute<DetalleMarker>()
-            DetalleMarkerScreen(markerId.markerId){
-                navController.navigate (List) { popUpTo<List> { inclusive = true }
-            }
+        composable<DetalleMarker> {
+            val markerId = it.toRoute<DetalleMarker>()
+            DetalleMarkerScreen(markerId.markerId) {
+                navController.navigate(List) {
+                    popUpTo<List> { inclusive = true }
+                }
             }
         }
     }

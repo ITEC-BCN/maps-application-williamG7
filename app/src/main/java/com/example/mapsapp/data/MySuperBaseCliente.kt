@@ -2,6 +2,8 @@ package com.example.mapsapp.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.media3.common.util.Log
+import androidx.media3.common.util.UnstableApi
 import com.example.mapsapp.BuildConfig
 import com.example.mapsapp.utils.Marker
 
@@ -12,7 +14,6 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 
-import io.github.jan.supabase.postgrest.result.PostgrestResult
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import kotlinx.uuid.UUID
@@ -42,7 +43,7 @@ class MySuperBaseCliente {
         return cliente.from("Marker").select().decodeList<Marker>()
     }
 
-    suspend fun getMarker(id: String): Marker {
+    suspend fun getMarker(id: Int): Marker {
         return cliente.from("Marker").select {
             filter { eq("id", id) }
         } .decodeSingle<Marker>()
@@ -50,30 +51,31 @@ class MySuperBaseCliente {
 
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun insertMarker(marker: Marker): PostgrestResult {
-        return cliente.from("Marker").insert(marker)
+    suspend fun insertMarker(marker: Marker){
+        cliente.from("Marker").insert(marker)
     }
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun updateMarker(
-        id: String, title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
-    ): PostgrestResult {
-        val imageName = storage.from("images").update(path = imageName, data = imageFile)
-        return cliente.from("Marker").update({
-            set("title", title)
-            set("user_id", user_id)
-            set("created_at", created_at)
-            set("category", category)
-            set("longitude", longitude)
-            set("latitude", latitude)
+        id: Int, update:Marker, title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
+    ){ val imageName = storage.from("images").update(path = imageName, data = imageFile)
+        cliente.from("Marker").update({
+            set("title", update.title)
+            set("user_id", update.user_id)
+            set("created_at", update.created_at)
+            set("category", update.category)
+            set("longitude", update.longitude)
+            set("latitude", update.latitude)
             set("image", buildImageUrl(imageFileName = imageName.path))
         }) {
             filter { eq("id", id) }
         }
     }
 
-    suspend fun deleteMarker(id: String): PostgrestResult {
-        return cliente.from("Marker").delete {
+    @androidx.annotation.OptIn(UnstableApi::class)
+    suspend fun deleteMarker(id: String) {
+        Log.d("Supabase", "Eliminando marcador con ID: $id") // Debugging
+        cliente.from("Marker").delete {
             filter { eq("id", id) }
         }
     }
@@ -82,11 +84,14 @@ class MySuperBaseCliente {
     suspend fun uploadImage(imageFile: ByteArray): String {
         val fechaHoraActual = LocalDateTime.now()
         val formato = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
-        val imageName = storage.from("images").upload(path = "image_${fechaHoraActual.format(formato)}.png", data = imageFile)
+        val imagePath = "image_${fechaHoraActual.format(formato)}.png"
+        val imageName = storage.from("images").upload(path = imagePath, data = imageFile)
         return buildImageUrl(imageFileName = imageName.path)
     }
 
-    fun buildImageUrl(imageFileName: String) = "${this.SupabaseUrl}/storage/v1/object/public/images/${imageFileName}"
+    fun buildImageUrl(imageFileName: String):String {
+        return "${this.SupabaseUrl}/storage/v1/object/public/images/${imageFileName}"
+    }
 
     suspend fun deleteImage(imageName: String){
         val imgName = imageName.removePrefix("https://aobflzinjcljzqpxpcxs.supabase.co/storage/v1/object/public/images/")

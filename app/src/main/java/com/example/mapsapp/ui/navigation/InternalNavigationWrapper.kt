@@ -23,12 +23,9 @@ fun InternalNavigationWrapper(){
             }
         }
         composable<Destination.Drawer> {
-            DrawerScreen(){
-                navController.navigate(Destination.Permisos){
-                    popUpTo<Destination.Drawer> { inclusive = true }
-                }
-            }
+            val drawerNavController = rememberNavController()
+            DrawerScreen(navController = drawerNavController)
         }
     }
-
 }
+
