@@ -39,13 +39,16 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import com.example.mapsapp.R
 import java.io.File
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material3.Icon
 
 @Composable
 fun CreateMarkerScreen(navigateBack: (String) -> Unit, latitud: Double, longitud: Double) {
 
     val contexto = LocalContext.current
     val imagenUri = remember { mutableStateOf<Uri?>(null) }
-    val imagen: Painter = painterResource(id = R.drawable.camera_icon)
+    val imagen = Icons.Default.PhotoCamera
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
