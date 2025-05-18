@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.utils.Marker
 import com.example.mapsapp.viewmodels.MyViewModel
-
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
@@ -33,15 +32,19 @@ import androidx.compose.material3.Text
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarkerListScreen(navigateToDetalleMarker: (Int) -> Unit) {
+    // obtengo el viewmodel para acceder a los datos de los marcadores
     val myViewModel: MyViewModel = viewModel()
 
+    // observo el estado de carga y la lista de marcadores desde el viewmodel
     val showLoading: Boolean by myViewModel.loading.observeAsState(true)
     val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
 
+    // lanzo efecto al iniciar la pantalla para cargar los marcadores
     LaunchedEffect(Unit) {
         myViewModel.getAllMarkers()
     }
 
+    // estructura base de la pantalla con barra superior
     Scaffold(
         topBar = {
             TopAppBar(
@@ -49,6 +52,7 @@ fun MarkerListScreen(navigateToDetalleMarker: (Int) -> Unit) {
             )
         }
     ) { innerPadding ->
+        // lista que muestra todos los marcadores con swipe para eliminar
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -56,14 +60,18 @@ fun MarkerListScreen(navigateToDetalleMarker: (Int) -> Unit) {
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             items(markersList) { marker ->
+                // estado del swipe para detectar si se desliza hacia la izquierda
                 val dissmissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = {
+                        // si se desliza correctamente, borro el marcador
                         if (it == SwipeToDismissBoxValue.EndToStart) {
                             myViewModel.deleteMarker(marker.id, marker.image)
                             true
                         } else false
                     }
                 )
+
+                // caja que permite hacer swipe sobre el marcador para eliminarlo
                 SwipeToDismissBox(
                     state = dissmissState,
                     modifier = Modifier.padding(vertical = 8.dp),
@@ -83,41 +91,48 @@ fun MarkerListScreen(navigateToDetalleMarker: (Int) -> Unit) {
                         }
                     }
                 ) {
-                    MarkerItem(marker = marker) { navigateToDetalleMarker(marker.id) }
+                    // llamo al composable que muestra la tarjeta del marcador
+                    MarkerItem(marker = marker) {
+                        navigateToDetalleMarker(marker.id)
+                    }
                 }
             }
         }
     }
 }
 
-
 @Composable
 fun MarkerItem(marker: Marker, onClick: () -> Unit) {
+    // caja que representa un marcador individual
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFF5F5F5))
-            .border(width = 1.dp, color = Color(0xFFBDBDBD))
+            .background(Color(0xFFF5F5F5)) // color gris claro
+            .border(width = 1.dp, color = Color(0xFFBDBDBD)) // borde gris
             .clickable { onClick() }
             .padding(16.dp)
     ) {
         Column {
+            // muestro el título del marcador en negrita
             Text(
                 text = marker.title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
+            // muestro el id del marcador
             Text(
                 text = "User ID: ${marker.id}",
                 fontSize = 14.sp,
                 color = Color.DarkGray
             )
+            // muestro la descripción
             Text(
                 text = "Description: ${marker.description}",
                 fontSize = 14.sp,
                 color = Color.DarkGray
             )
+            // muestro la fecha de creación
             Text(
                 text = "Created At: ${marker.created_at}",
                 fontSize = 14.sp,
@@ -126,9 +141,3 @@ fun MarkerItem(marker: Marker, onClick: () -> Unit) {
         }
     }
 }
-
-
-
-
-
-

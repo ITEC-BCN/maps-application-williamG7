@@ -18,7 +18,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 
 class MyViewModel: ViewModel(){
-    val dataBase = MyApp.dataBase
+    val dataBase = MyApp.dataBase // accedo a la base de datos
 
     private val _markerTitle = MutableLiveData<String>()
     val markerName = _markerTitle
@@ -52,10 +52,10 @@ class MyViewModel: ViewModel(){
     private var _selectedMarker: Marker? = null
 
     fun getAllMarkers(){
-        CoroutineScope(Dispatchers.IO).launch {
-            val dataBaseMarkers = dataBase.getAllMarkers()
+        CoroutineScope(Dispatchers.IO).launch { // hago la llamada a la base de datos en un hilo IO
+            val dataBaseMarkers = dataBase.getAllMarkers() // obtengo todos los marcadores
             withContext(Dispatchers.Main) {
-                _markersList.value = dataBaseMarkers
+                _markersList.value = dataBaseMarkers // actualizo la lista observable en hilo principal
             }
         }
     }
@@ -71,22 +71,22 @@ class MyViewModel: ViewModel(){
         latitude: Double,
         image: Bitmap? = null
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch { // inserto marcador
             try {
-                // Convertir Bitmap a ByteArray con validación
+                // convierto la imagen a bytes solo si existe y no está vacía
                 val imageBytes = image?.let { bitmap ->
                     ByteArrayOutputStream().use { stream ->
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                        stream.toByteArray().takeIf { it.isNotEmpty() }
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream) // convierto a PNG con calidad máxima
+                        stream.toByteArray().takeIf { it.isNotEmpty() } // valido que no esté vacío
                     }
                 }
 
-                // Subir imagen solo si hay datos
+                // si imageBytes no es null subo la imagen a la bd y obtengo url
                 val imageUrl = imageBytes?.let { bytes ->
                     dataBase.uploadImage(bytes)
-                } ?: "" // Cadena vacía si no hay imagen
+                } ?: "" // si no hay imagen dejo url vacía
 
-                // Insertar el marcador
+                // inserto marcador con todos los datos incluyendo url imagen
                 dataBase.insertMarker(
                     Marker(
                         title = title,
@@ -99,26 +99,25 @@ class MyViewModel: ViewModel(){
                     )
                 )
             } catch (e: Exception) {
-                // Manejar el error adecuadamente
+                // capturo error y muestro mensaje por consola
                 println("Error al insertar marcador: ${e.message}")
-                // Opcional: emitir un estado de error para mostrar en la UI
             }
         }
     }
 
     @OptIn(ExperimentalUuidApi::class)
     fun updateMarker(id: Int, title: String, user_id: UUID, created_at: String, description: String, longitude: Double, latitude: Double, image: Bitmap? = null,
-        currentImageUrl: String? = null
+                     currentImageUrl: String? = null
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO).launch { // actualizo marcador
             val imageBytes = image?.let { bitmap ->
                 ByteArrayOutputStream().use { stream ->
-                    // Usar calidad 100 para PNG (0-100)
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                    stream.toByteArray().takeIf { it.isNotEmpty() }  // Validar que no esté vacío
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream) // convierto nueva imagen a PNG si hay
+                    stream.toByteArray().takeIf { it.isNotEmpty() } // valido bytes no vacíos
                 }
             }
 
+            // genero nombre para la imagen, si no existe url actual genero con timestamp
             val imageName = currentImageUrl?.removePrefix("${BuildConfig.SUPABASE_URL}/storage/v1/object/public/images/")
                 ?: "marker_${System.currentTimeMillis()}.png"
             dataBase.updateMarker(
@@ -132,26 +131,27 @@ class MyViewModel: ViewModel(){
                     latitude = latitude,
                     image = imageName
                 ),
-                imageFile = imageBytes
+                imageFile = imageBytes // paso bytes de imagen para subir
             )
         }
     }
 
     fun deleteMarker(id: Int, image: String){
-        CoroutineScope(Dispatchers.IO).launch {
-            dataBase.deleteMarker(id)
-            dataBase.deleteImage(image)
-            getAllMarkers()
+        CoroutineScope(Dispatchers.IO).launch { // borro marcador y su imagen en background
+            dataBase.deleteMarker(id) // borro marcador por id
+            dataBase.deleteImage(image) // borro imagen asociada
+            getAllMarkers() // actualizo lista tras borrar
         }
     }
 
     @OptIn(ExperimentalUuidApi::class)
     fun getMarker(id: Int){
-        if (_selectedMarker == null){
-            CoroutineScope(Dispatchers.IO).launch {
+        if (_selectedMarker == null){ // si no hay marcador seleccionado
+            CoroutineScope(Dispatchers.IO).launch { // obtengo marcador por id
                 val marker = dataBase.getMarker(id)
                 withContext(Dispatchers.Main) {
-                    _selectedMarker = marker
+                    _selectedMarker = marker // guardo marcador localmente
+                    // actualizo live data con los datos del marcador para mostrar en UI
                     _markerTitle.value = marker.title
                     _markerUserId.value = marker.user_id
                     _markerCreatedAt.value = marker.created_at
@@ -193,5 +193,3 @@ class MyViewModel: ViewModel(){
         _markerImage.value = image
     }
 }
-
-
