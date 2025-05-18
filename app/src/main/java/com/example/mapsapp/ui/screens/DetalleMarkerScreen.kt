@@ -23,69 +23,101 @@ import kotlinx.uuid.UUID
 import kotlinx.uuid.generateUUID
 import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class) // uso experimental de uuid para generar ids únicos
 @Composable
-fun DetalleMarkerScreen(markerId: Int, navigateBack:() -> Unit) {
-    val myViewModel: MyViewModel = viewModel()
-    myViewModel.getMarker(markerId)
-    val markerTitle: String by  myViewModel.markerName.observeAsState("")
+fun DetalleMarkerScreen(markerId: Int, navigateBack: () -> Unit) {
+    val myViewModel: MyViewModel = viewModel() // obtengo la instancia del viewmodel
+    myViewModel.getMarker(markerId) // cargo los datos del marcador según su id
+
+    // observo los valores del marcador como estados reactivos para que la UI se actualice
+    val markerTitle: String by myViewModel.markerName.observeAsState("")
     val markerUserId: UUID by myViewModel.markerUserId.observeAsState(UUID.generateUUID())
     val created_at: String by myViewModel.markerCreatedAt.observeAsState("")
     val description: String by myViewModel.markerDescription.observeAsState("")
     val longitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
     val latitude: Double by myViewModel.markerLatitude.observeAsState(0.0)
 
-    Column(
+    Column( // columna que contiene todos los elementos verticalmente
         Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .fillMaxSize() // ocupa todo el espacio disponible
+            .padding(20.dp), // margen interno de 20dp
+        horizontalAlignment = Alignment.Start, // alineación horizontal a la izquierda
+        verticalArrangement = Arrangement.spacedBy(12.dp) // espacio vertical entre elementos
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(text = "Detalles del Marcador", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(24.dp)) // espacio vacío arriba
+        Text(text = "Detalles del Marcador", style = MaterialTheme.typography.headlineSmall) // título principal
 
-        // Cada campo con etiqueta y TextField
+        // campo para el título del marcador
         Column {
-            Text(text = "Título:", style = MaterialTheme.typography.labelMedium)
-            TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) }, modifier = Modifier.fillMaxWidth())
+            Text(text = "Título:", style = MaterialTheme.typography.labelMedium) // etiqueta texto
+            TextField(
+                value = markerTitle,
+                onValueChange = { myViewModel.editMarkerTitle(it) }, // actualizo el título en el viewmodel
+                modifier = Modifier.fillMaxWidth() // ocupa todo el ancho
+            )
         }
 
+        // campo para el id del usuario asociado al marcador
         Column {
             Text(text = "Usuario:", style = MaterialTheme.typography.labelMedium)
-            TextField(value = markerUserId.toString(), onValueChange = { myViewModel.editMarkerUserId(UUID(it)) }, modifier = Modifier.fillMaxWidth())
+            TextField(
+                value = markerUserId.toString(),
+                onValueChange = { myViewModel.editMarkerUserId(UUID(it)) }, // actualizo user id convirtiendo texto a UUID
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
+        // campo para la fecha de creación del marcador
         Column {
             Text(text = "Fecha de creación:", style = MaterialTheme.typography.labelMedium)
-            TextField(value = created_at, onValueChange = { myViewModel.editMarkerCreatedAt(it) }, modifier = Modifier.fillMaxWidth())
+            TextField(
+                value = created_at,
+                onValueChange = { myViewModel.editMarkerCreatedAt(it) }, // actualizo fecha en el viewmodel
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
+        // campo para la descripción del marcador
         Column {
             Text(text = "Descripción:", style = MaterialTheme.typography.labelMedium)
-            TextField(value = description, onValueChange = { myViewModel.editMarkerCategory(it) }, modifier = Modifier.fillMaxWidth())
+            TextField(
+                value = description,
+                onValueChange = { myViewModel.editMarkerCategory(it) }, // actualizo descripción en el viewmodel
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
+        // campo para la longitud del marcador
         Column {
             Text(text = "Longitud:", style = MaterialTheme.typography.labelMedium)
-            TextField(value = longitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) }, modifier = Modifier.fillMaxWidth())
+            TextField(
+                value = longitude.toString(),
+                onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) }, // actualizo longitud convirtiendo texto a double
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
+        // campo para la latitud del marcador
         Column {
             Text(text = "Latitud:", style = MaterialTheme.typography.labelMedium)
-            TextField(value = latitude.toString(), onValueChange = { myViewModel.editMarkerLatitude(it.toDouble()) }, modifier = Modifier.fillMaxWidth())
+            TextField(
+                value = latitude.toString(),
+                onValueChange = { myViewModel.editMarkerLatitude(it.toDouble()) }, // actualizo latitud convirtiendo texto a double
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp)) // espacio vacío de 24dp antes del botón
 
-        Button(onClick = {
-            myViewModel.updateMarker(markerId, markerTitle, markerUserId, created_at, description, longitude, latitude)
-            navigateBack()
-        }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            Text("Actualizar")
+        Button(
+            onClick = {
+                // actualizo el marcador con todos los datos actuales
+                myViewModel.updateMarker(markerId, markerTitle, markerUserId, created_at, description, longitude, latitude)
+                navigateBack() // vuelvo a la pantalla anterior
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally) // centro el botón horizontalmente
+        ) {
+            Text("Actualizar") // texto del botón
         }
     }
 }
-
-
-

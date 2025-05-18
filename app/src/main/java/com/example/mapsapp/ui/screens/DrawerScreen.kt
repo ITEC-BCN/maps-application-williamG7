@@ -32,36 +32,38 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerScreen(navController: NavHostController) {
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(DrawerValue.Closed) // estado inicial del drawer cerrado
+    val scope = rememberCoroutineScope() // scope para lanzar corutinas dentro del composable
     var selectedItemIndex by remember { mutableStateOf(0) }
+
+    // modal drawer que envuelve el contenido principal con navegación lateral
     ModalNavigationDrawer(
-        gesturesEnabled = false,
-        drawerContent = {
-            ModalDrawerSheet {
-                DrawerItem.entries.forEachIndexed { index, drawerItem ->
+        gesturesEnabled = false, // deshabilito gestos para abrir el drawer, solo menú
+        drawerContent = { // contenido que se mostrará dentro del drawer lateral
+            ModalDrawerSheet { // hoja modal para el drawer que contiene los items
+                DrawerItem.entries.forEachIndexed { index, drawerItem -> // itero sobre los items del drawer
                     NavigationDrawerItem(
-                        icon = {Icon(imageVector = drawerItem.icon, contentDescription = drawerItem.text)},
-                        label = { Text(text = drawerItem.text) },
-                        selected = index == selectedItemIndex,
-                        onClick = {
-                            selectedItemIndex = index
-                            scope.launch { drawerState.close() }
-                            navController.navigate(drawerItem.route)
+                        icon = { Icon(imageVector = drawerItem.icon, contentDescription = drawerItem.text) }, // icono para el item
+                        label = { Text(text = drawerItem.text) }, // texto para el item
+                        selected = index == selectedItemIndex, // marco como seleccionado el item actual
+                        onClick = { // acción al pulsar un item
+                            selectedItemIndex = index // actualizo el índice seleccionado
+                            scope.launch { drawerState.close() } // cierro el drawer con coroutine
+                            navController.navigate(drawerItem.route) // navego a la ruta del item seleccionado
                         }
                     )
                 }
             }
         },
-        drawerState = drawerState
-    ){
-        Scaffold(
-            topBar = {
+        drawerState = drawerState // paso el estado actual del drawer para controlarlo
+    ) {
+        Scaffold( // scaffold que contiene topbar y contenido principal
+            topBar = { // barra superior con título y botón menú
                 TopAppBar(
-                    title = { Text(" Mapps APP William") },
-                    navigationIcon = {
+                    title = { Text(" Mapps APP William") }, // título de la app
+                    navigationIcon = { // icono para abrir el drawer
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu") // icono menú hamburguesa
                         }
                     }
                 )
@@ -69,6 +71,7 @@ fun DrawerScreen(navController: NavHostController) {
         )
         { innerPadding ->
             MainNavigationWrapper(navController = navController, modifier = Modifier.padding(innerPadding))
+            // contenedor principal que maneja la navegación dentro de la app y aplica el padding
         }
     }
 }
