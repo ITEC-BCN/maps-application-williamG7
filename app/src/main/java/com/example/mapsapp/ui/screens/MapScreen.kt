@@ -62,7 +62,7 @@ fun MapScreen(onNavigateToList: () -> Unit,
                 Marker(
                     state = MarkerState(position = LatLng(marker.latitude, marker.longitude)),
                     title = marker.title,
-                    snippet = marker.category,
+                    snippet = marker.description,
                     onClick = {
                         onNavigateToDetalleMarker(marker.id.toString())
                         true

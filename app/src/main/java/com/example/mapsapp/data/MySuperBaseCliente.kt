@@ -57,13 +57,13 @@ class MySuperBaseCliente {
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun updateMarker(
-        id: Int, update:Marker, title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
+        id: Int, update:Marker, title: String, user_id: UUID, created_at: String, description: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
     ){ val imageName = storage.from("images").update(path = imageName, data = imageFile)
         cliente.from("Marker").update({
             set("title", update.title)
             set("user_id", update.user_id)
             set("created_at", update.created_at)
-            set("category", update.category)
+            set("description", update.description)
             set("longitude", update.longitude)
             set("latitude", update.latitude)
             set("image", buildImageUrl(imageFileName = imageName.path))

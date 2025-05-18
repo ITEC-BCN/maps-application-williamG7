@@ -89,7 +89,7 @@ fun MarkerItem(marker: Marker, onClick: () -> Unit) {
                 Text(marker.title, fontSize = 28.sp, fontWeight = FontWeight.Bold)
                 Text(text = "User ID: ${marker.id}")
                 Text(text = "Created At: ${marker.created_at}")
-                Text(text = "Category: ${marker.category}")
+                Text(text = "description: ${marker.description}")
             }
         }
     }

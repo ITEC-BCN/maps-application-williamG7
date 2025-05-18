@@ -25,7 +25,7 @@ fun DetalleMarkerScreen(markerId: String, navigateBack:() -> Unit) {
     val markerTitle: String by  myViewModel.markerName.observeAsState("")
     val markerUserId: UUID by myViewModel.markerUserId.observeAsState(UUID.generateUUID())
     val created_at: String by myViewModel.markerCreatedAt.observeAsState("")
-    val category: String by myViewModel.markerCategory.observeAsState("")
+    val description: String by myViewModel.markerDescription.observeAsState("")
     val longitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
     val latitude: Double by myViewModel.markerLatitude.observeAsState(0.0)
 
@@ -33,11 +33,11 @@ fun DetalleMarkerScreen(markerId: String, navigateBack:() -> Unit) {
         TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) })
         TextField(value = markerUserId.toString(), onValueChange = { myViewModel.editMarkerUserId(UUID(it)) })
         TextField(value = created_at, onValueChange = { myViewModel.editMarkerCreatedAt(it) })
-        TextField(value = category, onValueChange = { myViewModel.editMarkerCategory(it) })
+        TextField(value = description, onValueChange = { myViewModel.editMarkerCategory(it) })
         TextField(value = longitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) })
         TextField(value = latitude.toString(), onValueChange = { myViewModel.editMarkerLatitude(it.toDouble()) })
         Button(onClick = {
-            myViewModel.updateMarker(markerId, markerTitle, markerUserId, created_at, category, longitude, latitude)
+            myViewModel.updateMarker(markerId, markerTitle, markerUserId, created_at, description, longitude, latitude)
             navigateBack()
         }) {
             Text("Update")

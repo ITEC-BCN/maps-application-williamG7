@@ -85,7 +85,7 @@ fun CreateMarkerScreen(
         TextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("Categoría / Descripción") },
+            label = { Text("Descripción") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -132,7 +132,7 @@ fun CreateMarkerScreen(
                     title = title,
                     user_id = UUID.generateUUID(),
                     created_at = LocalDateTime.now().toString(),
-                    category = description,
+                    description = description,
                     longitude = longitud,
                     latitude = latitud,
                     image = bitmap

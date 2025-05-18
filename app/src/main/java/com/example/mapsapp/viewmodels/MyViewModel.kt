@@ -30,8 +30,8 @@ class MyViewModel: ViewModel(){
     private val _markerCreatedAt = MutableLiveData<String>()
     val markerCreatedAt = _markerCreatedAt
 
-    private val _markerCategory = MutableLiveData<String>()
-    val markerCategory = _markerCategory
+    private val _markerDescription = MutableLiveData<String>()
+    val markerDescription = _markerDescription
 
     private val _markerLongitude = MutableLiveData<Double>()
     val markerLongitude = _markerLongitude
@@ -61,21 +61,13 @@ class MyViewModel: ViewModel(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalUuidApi::class)
-    fun insertNewMarker(
-        title: String,
-        user_id: UUID,
-        created_at: String,
-        category: String,
-        longitude: Double,
-        latitude: Double,
-        image: Bitmap? = null
-    ) {
+    fun insertNewMarker(title: String, user_id: UUID, created_at: String, description: String, longitude: Double, latitude: Double, image: Bitmap? = null) {
         val marker = Marker(
             title = title,
             user_id = user_id,
             created_at = created_at,
+            description = description,
             longitude = longitude,
-            category = category,
             latitude = latitude,
             image = "marker_${System.currentTimeMillis()}.png"
         )
@@ -88,7 +80,7 @@ class MyViewModel: ViewModel(){
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun updateMarker(id: String, title: String, user_id: UUID, created_at: String, category: String, longitude: Double, latitude: Double, image: Bitmap? = null,
+    fun updateMarker(id: String, title: String, user_id: UUID, created_at: String, description: String, longitude: Double, latitude: Double, image: Bitmap? = null,
         currentImageUrl: String? = null
     ) {
         val stream = ByteArrayOutputStream()
@@ -103,7 +95,7 @@ class MyViewModel: ViewModel(){
                     title = title,
                     user_id = user_id,
                     created_at = created_at,
-                    category = category,
+                    description = description,
                     longitude = longitude,
                     latitude = latitude,
                     image = imageName
@@ -111,7 +103,7 @@ class MyViewModel: ViewModel(){
                 title,
                 user_id,
                 created_at,
-                category,
+                description,
                 longitude,
                 latitude,
                 imageName,
@@ -138,7 +130,7 @@ class MyViewModel: ViewModel(){
                     _markerTitle.value = marker.title
                     _markerUserId.value = marker.user_id
                     _markerCreatedAt.value = marker.created_at
-                    _markerCategory.value = marker.category
+                    _markerDescription.value = marker.description
                     _markerLongitude.value = marker.longitude
                     _markerLatitude.value = marker.latitude
                     _markerImage.value = marker.image
@@ -160,8 +152,8 @@ class MyViewModel: ViewModel(){
         _markerCreatedAt.value = createdAt
     }
 
-    fun editMarkerCategory(category: String) {
-        _markerCategory.value = category
+    fun editMarkerCategory(description: String) {
+        _markerDescription.value = description
     }
 
     fun editMarkerLongitude(longitude: Double) {

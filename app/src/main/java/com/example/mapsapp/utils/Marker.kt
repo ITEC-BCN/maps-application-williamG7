@@ -10,7 +10,7 @@ class Marker @OptIn(ExperimentalUuidApi::class) constructor(
     val title: String,
     val user_id: UUID,
     val created_at: String,
-    val category: String,
+    val description: String,
     val longitude: Double,
     val latitude: Double,
     val image: String,
