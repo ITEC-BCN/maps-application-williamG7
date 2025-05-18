@@ -4,234 +4,167 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
-import com.example.mapsapp.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mapsapp.viewmodels.MyViewModel
+import kotlinx.uuid.UUID
+import kotlinx.uuid.generateUUID
 import java.io.File
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import java.time.LocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CreateMarkerScreen(navigateBack:() -> Unit, latitud: Double, longitud: Double) {
+fun CreateMarkerScreen(
+    navigateBack: () -> Unit,
+    latitud: Double,
+    longitud: Double
+) {
+    val context = LocalContext.current
+    val viewModel: MyViewModel = viewModel()
 
-    val contexto = LocalContext.current
-    val imagenUri = remember { mutableStateOf<Uri?>(null) }
-    val imagen = Icons.Default.Phone
-    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val imageUri = remember { mutableStateOf<Uri?>(null) }
 
-
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-        if (success && imagenUri.value != null) {
-            val stream = contexto.contentResolver.openInputStream(imagenUri.value!!)
-            bitmap.value = BitmapFactory.decodeStream(stream)
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success && imageUri.value != null) {
+            val stream = context.contentResolver.openInputStream(imageUri.value!!)
+            bitmap = BitmapFactory.decodeStream(stream)
         }
     }
 
-    val pickImageLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                imagenUri.value = it
-                val stream = contexto.contentResolver.openInputStream(it)
-                bitmap.value = BitmapFactory.decodeStream(stream)
-            }
+    val pickImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            imageUri.value = it
+            val stream = context.contentResolver.openInputStream(it)
+            bitmap = BitmapFactory.decodeStream(stream)
         }
-
-    val takePictureLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success && imagenUri.value != null) {
-                val stream = contexto.contentResolver.openInputStream(imagenUri.value!!)
-                bitmap.value = BitmapFactory.decodeStream(stream)
-            }
-        }
-
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text("Abrir Camara") },
-            text = { Text("¿Quieres tomar una foto?") },
-            confirmButton = {
-                TextButton(onClick = {
-                    showDialog = false
-                    val uri = createImageUri(contexto)
-                    imagenUri.value = uri
-                    launcher.launch(uri!!)
-                }) {
-                    Text("Tomar Foto")
-                }
-            }
-        )
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 85.dp),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Title",
-            fontSize = 34.sp
-        )
 
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text("Agregar Marcador", fontSize = 28.sp)
+
+        Spacer(Modifier.height(16.dp))
 
         TextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("") }
+            label = { Text("Título") },
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(34.dp))
-        Text("Descripcion",
-            fontSize = 30.sp
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(Modifier.height(12.dp))
 
         TextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("") }
+            label = { Text("Categoría / Descripción") },
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(12.dp))
 
-        Image(
-            imageVector  = imagen,
-            contentDescription = "Camara Icon",
-            modifier = Modifier
-            .size(48.dp)
-            .clickable{
-                val uri = createImageUri(contexto)
-                imagenUri.value = uri
-                launcher.launch(uri!!)
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(onClick = {
+                val uri = createImageUri(context)
+                imageUri.value = uri
+                cameraLauncher.launch(uri!!)
+            }) {
+                Icon(Icons.Default.Phone, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text("Cámara")
             }
-        )
 
-        Spacer(modifier = Modifier.height(24.dp))
-        bitmap.value?.let {
-            Image(bitmap = it.asImageBitmap(), contentDescription = null,
-                modifier = Modifier.size(150.dp).clip(RoundedCornerShape(12.dp)),
-                )
+            Button(onClick = {
+                pickImageLauncher.launch("image/*")
+            }) {
+                Text("Galería")
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
-        TextButton( onClick = {
-            pickImageLauncher.launch("image/*")
-        },
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
-                containerColor = Color.Blue
-            ),
-            modifier = Modifier
-                .width(100.dp)
-                .height(40.dp)
-        ){
-            Text(
-                "ADD",
-                color = Color.White
+        bitmap?.let {
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = "Imagen seleccionada",
+                modifier = Modifier
+                    .size(180.dp)
+                    .clip(RoundedCornerShape(12.dp))
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick = navigateBack,
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
-                containerColor = Color.Blue
-            ),
-            modifier = Modifier
-                .width(100.dp)
+            onClick = {
+                viewModel.insertNewMarker(
+                    title = title,
+                    user_id = UUID.generateUUID(), // ajustá si tenés usuario real
+                    created_at = LocalDateTime.now().toString(),
+                    category = description,
+                    longitude = longitud,
+                    latitude = latitud,
+                    image = bitmap
+                )
+                navigateBack()
+            },
+            enabled = title.isNotBlank() && description.isNotBlank(),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Go Back")
+            Text("Agregar")
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        OutlinedButton(
+            onClick = navigateBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Cancelar")
         }
     }
 }
 
-fun createImageUri(contexto: Context): Uri? {
-    val file = File.createTempFile("temp_image_", ".jpg", contexto.cacheDir).apply {
+fun createImageUri(context: Context): Uri {
+    val file = File.createTempFile("temp_image_", ".jpg", context.cacheDir).apply {
         createNewFile()
         deleteOnExit()
     }
 
     return FileProvider.getUriForFile(
-        contexto,
-        "${contexto.packageName}.fileprovider",
+        context,
+        "${context.packageName}.fileprovider",
         file
     )
 }
-
-
-//Column(
-//            Modifier
-//                .fillMaxWidth()
-//                .weight(0.4f),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            Text("Create new marker", fontSize = 28.sp, fontWeight = FontWeight.Bold)
-//            TextField(value = markerTitle, onValueChange = { myViewModel.editMarkerTitle(it) })
-//            TextField(value = userIdText, onValueChange = { myViewModel.editMarkerUserId(UUID(it)) })
-//            TextField(value = markerCreatedAt, onValueChange = { myViewModel.editMarkerCreatedAt(it) })
-//            TextField(value = markerCategory, onValueChange = { myViewModel.editMarkerCategory(it) })
-//            TextField(value = markerLongitude.toString(), onValueChange = { myViewModel.editMarkerLongitude(it.toDouble()) })
-//            TextField(value = markerLatitude.toString(), onValueChange = { myViewModel.editMarkerLatitude(it.toDouble()) })
-//            TextField(value = markerImage.toString(), onValueChange = { myViewModel.editMarkerImage(it) })
-//            Button(onClick = { myViewModel.insertNewMarker(markerTitle, markerUserId, markerCreatedAt, markerCategory, markerLongitude, markerLatitude,userImage) }) {
-//                Text("Insert")
-//            }
-//        }
-
-
-//  val markersList by myViewModel.markersList.observeAsState(emptyList<Marker>())
-//    myViewModel.getAllMarkers()
-//    val markerTitle: String by myViewModel.markerName.observeAsState("")
-//    val markerUserId: UUID by myViewModel.markerUserId.observeAsState(UUID.generateUUID())
-//    val markerCreatedAt: String by myViewModel.markerCreatedAt.observeAsState("")
-//    val markerCategory: String by myViewModel.markerCategory.observeAsState("")
-//    val markerLongitude: Double by myViewModel.markerLongitude.observeAsState(0.0)
-//    val markerLatitude: Double by myViewModel.markerLatitude.observeAsState(0.0)
-//    val markerImage: String by myViewModel.markerImage.observeAsState("")
-//
-//    val userImage by remember { mutableStateOf<Bitmap?>(null) }
-//    var userIdText by remember { mutableStateOf(markerUserId.toString()) }
-
-
-
