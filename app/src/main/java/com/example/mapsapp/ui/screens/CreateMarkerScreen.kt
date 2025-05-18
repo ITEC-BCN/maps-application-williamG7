@@ -130,7 +130,7 @@ fun CreateMarkerScreen(
             onClick = {
                 viewModel.insertNewMarker(
                     title = title,
-                    user_id = UUID.generateUUID(), // ajustá si tenés usuario real
+                    user_id = UUID.generateUUID(),
                     created_at = LocalDateTime.now().toString(),
                     category = description,
                     longitude = longitud,
