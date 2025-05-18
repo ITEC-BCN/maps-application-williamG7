@@ -16,7 +16,6 @@ import io.github.jan.supabase.postgrest.from
 
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
-import kotlinx.uuid.UUID
 import java.time.LocalDateTime
 
 import java.time.format.DateTimeFormatter
@@ -117,7 +116,7 @@ class MySuperBaseCliente {
     // elimina una imagen del storage
     suspend fun deleteImage(imageName: String){
         // extrae el nombre del archivo de la url completa
-        val imgName = imageName.removePrefix("https://aobflzinjcljzqpxpcxs.supabase.co/storage/v1/object/public/images/")
+        val imgName = imageName.removePrefix("https://ekqeuybhtpxfbmldehua.supabase.co/storage/v1/object/public/images/")
         cliente.storage.from("images").delete(imgName)  // borra la imagen
     }
 }

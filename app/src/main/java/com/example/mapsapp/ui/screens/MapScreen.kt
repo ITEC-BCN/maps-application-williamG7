@@ -80,8 +80,7 @@ fun MapScreen(
                         Text(marker.description)
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        val imageUrl =
-                            "https://ekqeuybhtpxfbmldehua.supabase.co/storage/v1/object/public/markers/${marker.image}"
+                        val imageUrl = "https://ekqeuybhtpxfbmldehua.supabase.co/storage/v1/object/public/markers/${marker.image}"
 
                         Image(
                             painter = rememberAsyncImagePainter(imageUrl),
@@ -110,5 +109,6 @@ fun MapScreen(
                 }
             )
         }
+
     }
 }
