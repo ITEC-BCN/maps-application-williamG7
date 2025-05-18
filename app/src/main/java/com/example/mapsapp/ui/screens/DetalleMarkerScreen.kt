@@ -9,11 +9,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mapsapp.viewmodels.MyViewModel
 import kotlinx.uuid.UUID
@@ -24,7 +21,7 @@ import kotlin.uuid.ExperimentalUuidApi
 @Composable
 fun DetalleMarkerScreen(markerId: String, navigateBack:() -> Unit) {
     val myViewModel: MyViewModel = viewModel()
-    myViewModel.getMarker(markerId)
+    myViewModel.getMarker(markerId.toInt())
     val markerTitle: String by  myViewModel.markerName.observeAsState("")
     val markerUserId: UUID by myViewModel.markerUserId.observeAsState(UUID.generateUUID())
     val created_at: String by myViewModel.markerCreatedAt.observeAsState("")

@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,13 +16,12 @@ import com.example.mapsapp.ui.navigation.Destination.List
 import com.example.mapsapp.ui.screens.DetalleMarkerScreen
 import com.example.mapsapp.ui.screens.MapScreen
 import com.example.mapsapp.ui.screens.MarkerListScreen
-import com.example.mapsapp.viewmodels.MyViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier){
-    
+
     NavHost(navController, startDestination = Mapp) {
         composable<Mapp> {
             MapScreen(
@@ -47,7 +45,7 @@ fun MainNavigationWrapper(navController: NavHostController, modifier: Modifier){
 
         composable<DetalleMarker> {
             val markerId = it.toRoute<DetalleMarker>()
-            DetalleMarkerScreen(markerId.markerId) {
+            DetalleMarkerScreen(markerId.markerId){
                 navController.navigate(List) {
                     popUpTo<List> { inclusive = true }
                 }

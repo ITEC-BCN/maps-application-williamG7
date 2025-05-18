@@ -97,7 +97,25 @@ class MyViewModel: ViewModel(){
         val imageName = currentImageUrl?.removePrefix("https://aobflzinjcljzqpxpcxs.supabase.co/storage/v1/object/public/images/")
             ?: "marker_${System.currentTimeMillis()}.png"
         CoroutineScope(Dispatchers.IO).launch {
-            dataBase.updateMarker(id.toString(), title, user_id, created_at, category, longitude, latitude, imageName, stream.toByteArray()
+            dataBase.updateMarker(
+                id.toInt(),
+                Marker(
+                    title = title,
+                    user_id = user_id,
+                    created_at = created_at,
+                    category = category,
+                    longitude = longitude,
+                    latitude = latitude,
+                    image = imageName
+                ),
+                title,
+                user_id,
+                created_at,
+                category,
+                longitude,
+                latitude,
+                imageName,
+                stream.toByteArray()
             )
         }
     }
@@ -111,16 +129,16 @@ class MyViewModel: ViewModel(){
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun getMarker(id: String){
+    fun getMarker(id: Int){
         if (_selectedMarker == null){
             CoroutineScope(Dispatchers.IO).launch {
-                val marker = dataBase.getMarker(id.toString())
+                val marker = dataBase.getMarker(id)
                 withContext(Dispatchers.Main) {
                     _selectedMarker = marker
                     _markerTitle.value = marker.title
                     _markerUserId.value = marker.user_id
                     _markerCreatedAt.value = marker.created_at
-                    _markerCategory.value = marker.category.toString()
+                    _markerCategory.value = marker.category
                     _markerLongitude.value = marker.longitude
                     _markerLatitude.value = marker.latitude
                     _markerImage.value = marker.image
