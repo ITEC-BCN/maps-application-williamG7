@@ -57,8 +57,14 @@ class MySuperBaseCliente {
 
     @OptIn(ExperimentalUuidApi::class)
     suspend fun updateMarker(
-        id: Int, update:Marker, title: String, user_id: UUID, created_at: String, description: String, longitude: Double, latitude: Double, imageName: String, imageFile: ByteArray
-    ){ val imageName = storage.from("images").update(path = imageName, data = imageFile)
+        id: Int, update:Marker, imageFile: ByteArray? = null
+    ){  val imageUrl = if (imageFile != null && imageFile.isNotEmpty()) {
+        val imageName = update.image ?: "marker_${System.currentTimeMillis()}.png"
+        storage.from("images").update(path = imageName, data = imageFile)
+        buildImageUrl(imageName)
+    } else {
+        update.image ?: ""  // Mantener la imagen existente
+    }
         cliente.from("Marker").update({
             set("title", update.title)
             set("user_id", update.user_id)
@@ -66,14 +72,14 @@ class MySuperBaseCliente {
             set("description", update.description)
             set("longitude", update.longitude)
             set("latitude", update.latitude)
-            set("image", buildImageUrl(imageFileName = imageName.path))
+            set("image", imageUrl)
         }) {
             filter { eq("id", id) }
         }
     }
 
     @androidx.annotation.OptIn(UnstableApi::class)
-    suspend fun deleteMarker(id: String) {
+    suspend fun deleteMarker(id: Int) {
         Log.d("Supabase", "Eliminando marcador con ID: $id") // Debugging
         cliente.from("Marker").delete {
             filter { eq("id", id) }

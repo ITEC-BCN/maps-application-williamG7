@@ -20,6 +20,6 @@ open class Destination {
     class CreateMarker(val lat: Double, val lon: Double) : Destination()
 
     @Serializable
-    data class DetalleMarker(val markerId: String)
+    data class DetalleMarker(val markerId: Int)
 
 }
