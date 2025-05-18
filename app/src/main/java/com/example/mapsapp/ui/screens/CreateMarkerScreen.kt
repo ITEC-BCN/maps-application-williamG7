@@ -1,3 +1,4 @@
+package com.example.mapsapp.ui.screens
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -40,15 +41,14 @@ import androidx.core.content.FileProvider
 import com.example.mapsapp.R
 import java.io.File
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.*
 
 @Composable
-fun CreateMarkerScreen(navigateBack: (String) -> Unit, latitud: Double, longitud: Double) {
+fun CreateMarkerScreen(navigateBack:() -> Unit, latitud: Double, longitud: Double) {
 
     val contexto = LocalContext.current
     val imagenUri = remember { mutableStateOf<Uri?>(null) }
-    val imagen = Icons.Default.PhotoCamera
+    val imagen = Icons.Default.Phone
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -132,7 +132,7 @@ fun CreateMarkerScreen(navigateBack: (String) -> Unit, latitud: Double, longitud
         Spacer(modifier = Modifier.height(24.dp))
 
         Image(
-            painter = imagen,
+            imageVector  = imagen,
             contentDescription = "Camara Icon",
             modifier = Modifier
             .size(48.dp)
@@ -172,7 +172,7 @@ fun CreateMarkerScreen(navigateBack: (String) -> Unit, latitud: Double, longitud
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = navigateBack as () -> Unit,
+            onClick = navigateBack,
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color.White,
                 containerColor = Color.Blue

@@ -1,6 +1,5 @@
 package com.example.mapsapp.ui.navigation
 
-import CreateMarkerScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -16,6 +15,7 @@ import com.example.mapsapp.ui.navigation.Destination.List
 import com.example.mapsapp.ui.screens.DetalleMarkerScreen
 import com.example.mapsapp.ui.screens.MapScreen
 import com.example.mapsapp.ui.screens.MarkerListScreen
+import com.example.mapsapp.ui.screens.CreateMarkerScreen
 
 
 @RequiresApi(Build.VERSION_CODES.O)
