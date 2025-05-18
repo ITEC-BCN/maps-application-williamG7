@@ -74,10 +74,10 @@ fun MapScreen(
         selectedMarker?.let { marker ->
             AlertDialog(
                 onDismissRequest = { selectedMarker = null },
-                title = { Text(marker.title ?: "Sin título") },
+                title = { Text(marker.title) },
                 text = {
                     Column {
-                        Text(marker.description ?: "Sin descripción")
+                        Text(marker.description)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         val imageUrl =
